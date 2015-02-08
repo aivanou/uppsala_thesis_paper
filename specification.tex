@@ -1,0 +1,109 @@
+\documentclass[11pt, a4paper]{scrartcl}
+
+\usepackage{fullpage}
+
+\newcommand{\email}[1]{\small{#1}}
+\newcommand{\cname}[1]{\mbox{\texttt{#1}}}
+
+\title{Thesis Specification}
+\subtitle{A Centralised data aggregation layer across different consuming platforms}
+
+\begin{document}
+
+\maketitle
+
+\section{Background}
+
+
+The project in the context of networking, caching and data aggregation. The goal of the project is to investigate different solutions for implementing a caching layer used in a backend middleware, design and develop prototypes for each solution, run set of tests and select the most optimal solution according to the parameters described in Project Description section.
+The selected solution is then further developed and integrated into an existing middleware provided by the company, and an analysis is then made in a real life scenario.
+
+
+
+\section{Project Description}
+
+Applications frequently require communication with external services. Every external service specifies their own API. The problem can be defined as following:  There are a lot applications written for different operating systems and they require frequent communication with many external services. What architecture is the most appropriate for communication between applications and external services? 
+
+One of the solutions, is a simple direct communication between application and services. The application will send requests to every service and wait for responses. This solution has several drawbacks: one should maintain many communication layers written on different languages. When the external API changes, one should rewrite every communication layer. This increase the cost of development and time consumption. 
+
+The different solution will be to introduce the middle layer between applications and external services. The applications will communicate with middle layer using predefined protocol, middle layer will gather data from external services and send it to the applications. This approach has several benefits: every application will be written with standardised communication API, defined by the middle layer; if external API changes only middle layer should be rewritten; the response time can be decreased by caching the data in the middle layer. 
+
+The project tries to break the connection between applications and external services by providing the middle layer. The applications will communicate with the middleware using predefined format that is the same for every platform. The middleware will manage the requests, translate them to the format appropriate for the external services and forward them to the appropriate servers. It will also manage the responses from servers and send them back to the applications.
+
+The main goal of the project is to select the optimal strategy/architecture for caching layer according to the parameters specified below:
+
+\begin{itemize}
+    \item Hit/Miss/Error rates
+    \item Speed of caching mechanism
+    \item Hardware utilization (space used etc)
+    \item Costs
+    \item Scalability
+    \item Response times to clients
+    \item Conforming to standards
+    \item Redundancy (solution surviving one or more malfunctioning servers)
+\end{itemize}
+
+\section{Methods}
+
+The goal of the first phase of the project is to study various solutions to the intended middleware, each of which will have its own implementation and design, possibly bound to a specific programming language. As such, the methods used for building prototypes for each identified solution is not possibly to specify in great detail at this point in time, but the following technologies / languages have been identified as possible areas of interest in meetings with the company at which this thesis will take place:
+
+Databases:
+\begin{itemize}
+    \item Redis
+    \item Memcached
+    \item MongoDB
+    \item MySQL
+\end{itemize}
+
+Web Caching Related Protocols and Standards:
+\begin{itemize}
+    \item HTTP 1.0/1.1 protocols
+    \item Internet Cache Protocol
+\end{itemize}
+
+\section{Relevant Courses}
+
+\begin{itemize}
+    \item Advanced computer architecture
+    \item Wireless Communication and Networked Embedded Systems
+    \item Large scale programming
+\end{itemize}
+
+\section{Deliminations}
+
+The prestudy phase will focus around finding possible solutions and creating a chart based on findings, allowing for initial comparisons between them. Given that the intended implementation phase of the thesis work is approximately 12 weeks, and that the selected solution will require additional work to be integrated into the existing middleware of the company is estimated at 4 weeks, that leaves roughly 8 weeks to create prototypes. If more than 3 possible solutions are identified, I will perform a first selection of 3 solutions based on the prestudy information alone. This means that under no circumstances there will be no more than 3 prototypes developed.
+
+The additional integration using the selected solution as part of the existing middleware provided by the company should be implemented in practice, but could instead be part of a theoretical discussion where the end result is only derived from previous tests on the prototypes and learnings during the project.
+
+\section{Time Plan}
+
+
+
+\begin{tabular}{|c|p{8cm}|l|}
+  \hline
+  \textbf{Phase Name} & \textbf{Task} & \textbf{Estimated time} \\ \cline{2-2}
+  \hline \hline
+  Prestudy phase & Finding and reading literature on topics noted above & 26 January - 9 February  \\ \cline{2-2}
+        & Meeting with the reviewer & 9 Febuary \\ \cline{2-2}
+        & Identifying possible solutions & 10 February - 12 February \\ \cline{2-2} 
+        & Creation of charts and other material to easily compare solutions  & 13 February - 22 February \\ \cline{2-2}
+        & Presentation solutions to company, selection of solutions (if more than 3)& 23 February\\ \cline{2-2}
+        & Meeting with the reviewer & 25 Febuary \\ \cline{2-2}
+  \hline \hline
+  Implementation phase &  Developing a prototype of solution A & 24 February - 10 March \\ \cline{2-2}
+                       &  Developing a prototype of solution B & 11 March - 25 March \\ \cline{2-2}       & Meeting with the reviewer & 25 March \\ \cline{2-2}
+                       &  Developing a prototype of solution C & 26 March - 16 April \\ \cline{2-2}
+          & Data gathering / Benchmarking and tests / technical comparisons / discussion (parameters listed above) & 16 April - 23 April \\ \cline{2-2}
+          & Meeting with the reviewer & 23 April \\ \cline{2-2}
+          & Selection of a single prototype (solution) for further implementation in a real world scenario, running on existing middleware. & 24 April \\ \cline{2-2}
+          & Integration work, using prototype as basis.& 24 April - 8 May \\ \cline{2-2}
+          & Tests in actual middleware / benchmarking and discussion regarding how well the integrated implementation works in comparison to expectations.& 11 May - 18 May \\ \cline{2-2}
+        & Meeting with the reviewer & 18 May \\ \cline{2-2}
+
+  \hline \hline
+
+    Report  &  Conclusion, Further Discussions & 19-20 May \\ \cline{2-2}
+            &  Presentation preparation & 21 May - 25 May \\ \cline{2-2}
+  \hline
+\end{tabular}
+\end{document}
