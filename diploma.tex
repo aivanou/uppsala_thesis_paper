@@ -10,14 +10,23 @@
 \usepackage{amssymb}
 \usepackage{ragged2e}
 \usepackage{multirow}
-\usepackage{algorithmic}
-\usepackage[boxed]{algorithm}
+\usepackage{algorithmic
+}\usepackage[boxed]{algorithm}
 \usepackage{tabularx}
 \usepackage{xtab}
 \usepackage{subfig}
 \usepackage{hyphenat}
 \usepackage{setspace}
 \usepackage{fancyhdr}
+\usepackage{tikz}
+
+\usetikzlibrary{positioning,fit,calc}
+
+\pgfkeys{
+    /tikz/node distance/.append code={
+        \pgfkeyssetvalue{/tikz/node distance value}{#1}
+    }
+}
 
 \pagestyle{fancyplain}
 \fancyhf{}

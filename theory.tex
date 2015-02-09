@@ -2,6 +2,25 @@
 	
 \subsection{Web Caching}
 
+\begin{tikzpicture}[
+    node distance=1.0cm,
+    mynode/.style={
+        draw,
+        outer sep=0pt
+    }]
+    \node[mynode] (wbc)                {Web Browser Cache};
+    \node at ([xshift=-300pt]wbc)                {Proxy Cache};
+    % \node[mynode] (gc)                {Gateway Cache};
+
+    \node [
+        mynode,
+        inner sep=0pt,
+        shift=($(wbc.south)-(wbc.north)$),
+        yshift=-\pgfkeysvalueof{/tikz/node distance value},
+        fit={(wbc)},
+        label=center:Proxy Cache] (pc) {};
+  \end{tikzpicture}
+
 \subsection{Content Delivery Networks}
 
 \newpage
