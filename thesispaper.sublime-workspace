@@ -519,11 +519,27 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "diploma.tex",
+			"settings":
+			{
+				"buffer_size": 2117,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "introduction.tex",
+			"settings":
+			{
+				"buffer_size": 3472,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/C++/C++.sublime-build",
 	"command_palette":
 	{
-		"height": 392.0,
+		"height": 428.0,
 		"selected_items":
 		[
 			[
@@ -691,7 +707,7 @@
 				"Set Syntax: Java"
 			]
 		],
-		"width": 449.0
+		"width": 519.0
 	},
 	"console":
 	{
@@ -711,12 +727,15 @@
 	},
 	"expanded_folders":
 	[
-		"/home/aliaksandr/thesis/paper"
+		"/home/aliaksandr/study/uppsala/thesis/thesis_paper"
 	],
 	"file_history":
 	[
-		"/home/aliaksandr/study/resume/resume.tex",
+		"/home/aliaksandr/study/uppsala/thesis/master_thesis/package.json",
+		"/home/aliaksandr/study/resume/res2.log",
+		"/home/aliaksandr/study/resume/res.cls",
 		"/home/aliaksandr/study/resume/res2.tex",
+		"/home/aliaksandr/study/resume/resume.tex",
 		"/home/tierex/study/resume/cover_letter.tex",
 		"/home/tierex/study/resume/report.tex",
 		"/home/tierex/study/uppsala/uppsala_labs/parallel_programming/labs/assignment2/assignment2_report.tex",
@@ -839,10 +858,7 @@
 		"/home/tierex/study/diploma/record/not_my/.gitignore",
 		"/home/tierex/study/diploma/record/not_my/diploma.tex",
 		"/home/tierex/study/diploma/record/test.tex",
-		"/home/tierex/study/diploma/record/diploma.tex",
-		"/home/tierex/study/diploma/record/diploma.pdf",
-		"/home/tierex/study/diploma/record/title.tex",
-		"/home/tierex/study/diploma/record/test.aux"
+		"/home/tierex/study/diploma/record/diploma.tex"
 	],
 	"find":
 	{
@@ -860,6 +876,19 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"\\",
+			"}\n",
+			"document",
+			"\n\\begin{docume",
+			"SoftwareAAAAAAAAAAAAAAAAAAA",
+			"iwona",
+			"\\",
+			"% LaTeX file for resume \n% This file uses the resume document class (res.cls)\n\\documentclass[margin]{scrartcl} \n\n\\usepackage{fullpage}\n\\usepackage{listings}\n\\usepackage{graphicx}\n\\usepackage{hyperref}\n\\usepackage{multicol}\n\\usepackage{times}\n\n\n% the margin option causes section titles to appear to the left of body text \n\\textwidth=5.2in % increase textwidth to get smaller right margin\n%\\usepackage{helvetica} % uses helvetica postscript font (download helvetica.sty)\n%\\usepackage{newcent}   % uses new century schoolbook postscript font \n\n\\begin{document} \n \n\\name{Motivering\\\\[12pt]} % the \\\\[12pt] adds a blank line after name\n \n\n\\end{document} \n",
+			"\\",
+			"scrartcl",
+			"article",
+			"\n\\",
+			".\n",
 			"Languages",
 			"item",
 			"experien",
@@ -974,20 +1003,7 @@
 			"spawn",
 			"BooleanMapping",
 			"MVars",
-			"build_init_mapp",
-			"find_solution",
-			"substitute_dict",
-			"simplify_expression",
-			"simplify_sat_expressions",
-			"simplify_dict",
-			"simplify_sat_expression",
-			"s_v",
-			"substitute_dict",
-			"svs",
-			"sss",
-			"io:format",
-			"simplify_sat_expressions",
-			"io:format"
+			"build_init_mapp"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1005,8 +1021,65 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "diploma.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2117,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2045,
+								2045
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1416.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "introduction.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3472,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 648.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -1069,7 +1142,7 @@
 	{
 		"height": 0.0
 	},
-	"project": "masterThesisPaper.sublime-project",
+	"project": "thesispaper.sublime-project",
 	"replace":
 	{
 		"height": 60.0
@@ -1080,6 +1153,22 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"in",
+				"introduction.tex"
+			],
+			[
+				"restc",
+				"client/restClient.js"
+			],
+			[
+				"para",
+				"controllers/param.js"
+			],
+			[
+				"res2.te",
+				"res2.tex"
+			],
 			[
 				"acc",
 				"wireless_communication/lab1/ClickerClient/AccelMsg.h"
@@ -1265,10 +1354,6 @@
 				"pyreader/pyreader_site/templates/base_form.html"
 			],
 			[
-				"in",
-				"pyreader/pyreader_site/templates/index.html"
-			],
-			[
 				"mo",
 				"pyreader/pyreader_site/models.py"
 			],
@@ -1405,19 +1490,31 @@
 	},
 	"select_project":
 	{
-		"height": 500.0,
+		"height": 546.0,
 		"selected_items":
 		[
 			[
-				"data",
-				"/home/tierex/study/uppsala/data_mining/data_mining1.sublime-project"
+				"",
+				"~/study/resume/via.sublime-workspace"
 			],
 			[
-				"",
-				"/home/tierex/study/uppsala/adv_computer_arch/adv_comp_arch.sublime-project"
+				"svia",
+				"~/study/resume/via.sublime-workspace"
+			],
+			[
+				"resu",
+				"~/study/resume/myresume.sublime-project"
+			],
+			[
+				"pape",
+				"~/study/uppsala/thesis/paper/masterThesisPaper.sublime-workspace"
+			],
+			[
+				"data",
+				"/home/tierex/study/uppsala/data_mining/data_mining1.sublime-project"
 			]
 		],
-		"width": 380.0
+		"width": 415.0
 	},
 	"select_symbol":
 	{

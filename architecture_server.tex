@@ -4,4 +4,152 @@
 
 \subsection{Server Architecture}
 
+The architecture consists of the following components: Client, Middleware server, Local Cache, Metadata Server and Content Server(Content Distributors). The Architecture overview is showed on figure \ref{fig:arch_overview}. The components description:
+
+\begin{itemize}
+	\item Client can be Android application, iOS application, HTML/CSS application or any other application that have communication througth TCP/IP protocol.
+    \item Middleware is a data aggregation framework. It gathers and manages data from metadata server and content servers.
+    \item Local Cache is represented by a Redis database. It is key-value in memory database[reference]. In order not to make additional requests to the outer servers, the middleware caches the responses for some time in the local database.
+    \item Metadata server is the outer server that stores information about content distributors, sessions, and assets[describe what is asset].
+    \item Content servers(content distributors) are customer APIs that provide access to the content.
+
+\end{itemize}
+
+The client makes requests to the middleware. The middleware picks the appropriate content from content distributors and sends it back to the client. On the first request, the middleware connects to the metada server. The metadata server assignes a new session to the client and sends it back to the middleware. Using this session, the middleware retrieves the resource locator from the metadata server. The middleware stores the response from the metadata server in the local database. Using the resourse locator, the middleware requests the appropriate content from the content server and sends back to the client.
+
+In order to improve the performance and avoid additional requests to the content distributors, the middleware server has a local in memory database that stores content and metadata for some time. This technique helps to decrease traffic between content servers and the client and avoid delays in highly loaded hours(mb change?).  
+
+
+\subsection{Middleware architecture}
+
+Components:
+1. View
+2. Controllers
+3. Model
+3.1 Cache
+3.2 Data requests
+3.2.1 REST client
+3.2.2 Metadata 
+3.2.3 Resource
+4. Configuration
+
+
+
+\begin{figure}[h]
+\begin{center}
+
+	\begin{tikzpicture}[
+	  font=\sffamily,
+	  every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=2cm},
+	  client/.style={draw,thick,ellipse,fill=yellow!20,inner sep=.3cm},
+	  middleware/.style={draw,very thick,shape=rectangle,inner sep=.3cm},
+	  source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.3cm},
+	  sink/.style={source,fill=green!20},
+	  dots/.style={gray,scale=2},
+	  to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
+	  every node/.style={align=center}]
+
+	  \tikzstyle{state} = [draw, very thick, fill=white, rectangle, minimum height=3em, minimum width=7em, node distance=8em, font={\sffamily\bfseries}]
+	  \tikzstyle{stateEdgePortion} = [black,thick];
+	  \tikzstyle{stateEdge} = [stateEdgePortion,->];
+	  \tikzstyle{edgeLabel} = [pos=0.5, text centered, font={\sffamily\small}];
+
+
+	  % Position the nodes using a matrix layout
+	  \matrix{
+	    \& \node[client] (client) {Clients}; \& \\
+
+	    \& \node[middleware] (middleware) {Middleware}; \& \\
+
+	    \node[sink] (mtserver) {Metadata Server};
+	      \& \& \node[sink] (ovp) {OVP}; \\
+	  };
+
+	  \draw ($(client.south) + (-.5em,0)$) 
+	      edge[stateEdge] node[edgeLabel,xshift=-1em, yshift=-1em]{\emph{Request}} 
+	      ($(middleware.north) + (-.5em,0)$);
+	  \draw ($(middleware.north) + (.5em,0)$) 
+	      edge[stateEdge] node[edgeLabel,xshift=4em]{\emph{Data}} 
+	      ($(client.south) + (.5em,0)$);
+
+
+	  \draw ($(middleware.west) + (0,.5em)$) 
+	      edge[stateEdge] node[edgeLabel,xshift=-4em, yshift=-1em]{\emph{Request}} 
+	      ($(mtserver.north) + (-.5em,0)$);
+	  \draw ($(mtserver.north) + (.5em,0)$) 
+	      edge[stateEdge] node[edgeLabel,xshift=2em]{\emph{Session ID}} 
+	      ($(middleware.west) + (0,-.5em)$);
+
+
+	  \draw ($(middleware.east) + (0,.5em)$) 
+	      edge[stateEdge] node[edgeLabel,xshift=-2em, yshift=-1em]{\emph{Request}} 
+	      ($(ovp.north) + (.5em,0)$);
+	  \draw ($(ovp.north) + (-.5em,0)$) 
+	      edge[stateEdge] node[edgeLabel,xshift=2em]{\emph{Data Resp}} 
+	      ($(middleware.east) + (0,-.5em)$);
+
+
+	\end{tikzpicture}
+
+\end{center}
+\caption{Architecture overview}
+\label{fig:arch_overview}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{center}
+
+	\resizebox{1.0\textwidth}{0.8\textwidth} {
+
+	\begin{sequencediagram}
+	\newthread[white]{cl}{Client}
+	\newinst[1.7]{mw}{Middleware}
+	\newinst{lc}{Local Cache}
+	\newinst[1.9]{ms}{Metadata Server}
+	\newinst[1.3]{cs}{Content Server}
+
+	\begin{call}{cl}{First request}{mw}{Response}
+
+		\begin{call}{mw}{Create new session}{ms}{Session ID}
+		\end{call}
+
+		\begin{call}{mw}{Cache Session}{lc}{}
+		\end{call}
+
+		\begin{call}{mw}{Get content locator}{ms}{URL}
+		\end{call}
+
+		\begin{call}{mw}{Cache Locator}{lc}{}
+		\end{call}
+
+	\end{call}
+
+	\begin{call}{cl}{GET Request}{mw}{GET Response}
+		
+		\begin{call}{mw}{Check Local Cache}{lc}{}
+		\end{call}
+
+		\begin{sdblock}{alt}{if data in cache}
+			\begin{call}{mw}{Send response to Client}{cl}{}
+			\end{call}
+			\begin{sdblock}{else}{}
+				\begin{call}{mw}{Request Content}{cs}{Response}
+				\end{call}
+				\begin{call}{mw}{Cache content}{lc}{}
+				\end{call}
+			\end{sdblock}
+		\end{sdblock}
+
+
+	\end{call}
+
+	\end{sequencediagram}
+	}
+
+\end{center}
+\caption{Sequence Diagram}
+\label{fig:arch_uml}
+\end{figure}
+
 \newpage

@@ -10,8 +10,8 @@
 \usepackage{amssymb}
 \usepackage{ragged2e}
 \usepackage{multirow}
-\usepackage{algorithmic
-}\usepackage[boxed]{algorithm}
+\usepackage{algorithmic}
+\usepackage[boxed]{algorithm}
 \usepackage{tabularx}
 \usepackage{xtab}
 \usepackage{subfig}
@@ -19,14 +19,11 @@
 \usepackage{setspace}
 \usepackage{fancyhdr}
 \usepackage{tikz}
+\usepackage{pgf-umlsd}
 
+\usetikzlibrary{arrows}
 \usetikzlibrary{positioning,fit,calc}
-
-\pgfkeys{
-    /tikz/node distance/.append code={
-        \pgfkeyssetvalue{/tikz/node distance value}{#1}
-    }
-}
+\usetikzlibrary{shapes,snakes}
 
 \pagestyle{fancyplain}
 \fancyhf{}
@@ -41,18 +38,62 @@
 % new commands
 \newcommand\sign[1]{sign(#1)}
 
+
+
+
 \begin{document}
 
-\setcounter{page}{1}
-\tableofcontents
-\newpage
+% \setcounter{page}{1}
+% \tableofcontents
+% \newpage
 
-\input{introduction.tex}
-\input{theory.tex}
-\input{architecture_web.tex}
+% \input{introduction.tex}
+% \input{theory.tex}
+% \input{architecture_web.tex}
 \input{architecture_server.tex}
-\input{results.tex}
-\input{conclusion.tex}
-\input{bibliography.tex}
+% \input{results.tex}
+% \input{conclusion.tex}
+% \input{bibliography.tex}
 
 \end{document}
+
+
+% -------------------------------------------------
+% content
+% 1. Introduction
+% 1.1 Background
+% 1.2 Project Objectives
+% 1.3 Thesis outline
+% 2. Theoretical part
+% 2.1 Web Caching
+% 2.1.1 Http Protocol
+% 2.1.2 Cache Control in Http
+% 2.1.3 Web Cache Layers
+% 2.2 Content Delivery Networks
+% 2.3 Server Side Caching
+% 
+% 3. Caching in Reversed proxies
+% 3.1 Static Content
+% 3.2 Dynamic Content
+% 3.3 Architecture overview
+% 3.4 Caching techniques
+% 3.4.1 Time based caching
+% 3.4.2 Data based caching
+% 3.4.3 Comparison
+% 3.5 Purging strategies for dynamic content
+
+% 4. Server Side Caching
+% 4.1 Server Caching strategies
+% 4.2 Architecture overview
+% 4.3 Content based caching
+% 4.4 Cache eviction strategies
+
+% 5. Results 
+% 5.1 Reversed Proxy Caching
+% 5.2 Server Side Caching
+% 5.3 Comparison with existing middleware
+
+% 6. Conclusion
+
+% -------------------------------------------------
+
