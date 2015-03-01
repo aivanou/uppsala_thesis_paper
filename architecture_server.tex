@@ -2,9 +2,16 @@
 
 \subsection{Redis Cache}
 
+
 \subsection{Server Architecture}
 
-The architecture consists of the following components: Client, Middleware server, Local Cache, Metadata Server and Content Server(Content Distributors). The Architecture overview is showed on figure \ref{fig:arch_overview}. The components description:
+The architecture consists of the following components: Client, Middleware server, Local Cache, Metadata Server and Content Server(Content Distributors). The Architecture overview is showed on figure \ref{fig:arch_overview}. 
+
+The client sends requests to the middleware server. The middleware server handles client requests and sends back appropriate responses. The response can be one of two types: Configurational or Data demand. If response is configurational the server redirects it to the Metadata server, otherwise it redirects it to the Content server. The middleware supports local cache and caches every response that is not assosiated with user session. The problem is that the middleware server is tightly coupled with content server. As a result, for every content distributor, new middleware is deployed. It is not very optimal approach.
+
+The client is a web application developed using javascript, html, css frameworks and Model View Controller pattern. It communicates with middleware server through REST services. In order to render single page, several HTTP requests must be done. If client needs to render complicated page, multiple HTTP requests will decrease the performance. The better approach will be aggregate corresponding requests into one and send it to the middleware server.    
+
+The components description:
 
 \begin{itemize}
 	\item Client can be Android application, iOS application, HTML/CSS application or any other application that have communication througth TCP/IP protocol.
@@ -19,29 +26,76 @@ The client makes requests to the middleware. The middleware picks the appropriat
 
 In order to improve the performance and avoid additional requests to the content distributors, the middleware server has a local in memory database that stores content and metadata for some time. This technique helps to decrease traffic between content servers and the client and avoid delays in highly loaded hours(mb change?).  
 
+\subsection{Middleware server architecture}
 
+The middleware server is written on server side javascript language, using asynchronous server Node.js. The server developed using Model View Controller (MVC) pattern and communicates with other components through REST services. As a result, the server components are loosely coupled with each other, that gives great flexibility in changing and replacing components and simplifies testing. 
 
-TODO:
-1. describe Middleware architecture
-2. describe security
-3. build middleware uml
-4. describe benefits of this approach
+The middleware consists of next components: Controllers, Managers, Services, Configuration and Data Model Object builders. 
 
-\subsection{Middleware architecture}
+The controllers recieve requests, validate user data and redirect them to assigned manager. The manager checks the local cache, if the request is new, or the cache data is stale, the manager invokes assigned services. Every client has UUID,(unique user identifier). When the client makes first configurational request, the server requests new session key from the Metadata Server using users UUID. The session key is represented by a unique session identifier that has expiration date. This identifier is transferred with every configurational request to the Metadata server. The configurational requests are user actions, user setting, metadata health check, etc. When the client makes the data demand request, the manager invokes content services, that redirect request to the assigned content server. The response then is stored in the cache, translated into Data Model object(DMO) and transferred back to the client in JSON format. The builders are in charge for translating JSON data into Persistent Data Model objects. For every DMO there is an assigned manager and service. As an example, if the content server responses with video object, there will be VideoManager and VideoService components.   
 
+The client layer and middleware layer are loosely coupled and communicate with each other through REST services. It gives application great flexibility.
 
-Components:
-1. View
-2. Controllers
-3. Model
-3.1 Cache
-3.2 Data requests
-3.2.1 REST client
-3.2.2 Metadata 
-3.2.3 Resource
-4. Configuration
+As mentioned earlier, the drawback of this architecture are specific DMO objects. The middleware server serves as a data redirector and data aggregator, and should be general about what data coming through him. The next section will present the View Model Objects(VMO) and how it can improve performance.
 
+% Client
+% Controller:
+% 	Recieve requests from clients
+% Managers:
+% 	Manages cache layer,
+% 	Calls appropriate services on cache miss,
+% 	Translates data into Persistent Data Model Objects.
+% Services:
+% 	1. AppGrid services(Metadata server):
+% 		Manages AppGrid sessions
+% 		Configuration requests
+% 		Log requests(user actions)
+% 		User Settings
+% 	2. OVP services (Content server)
+% 		Manages individual content
+% 		Example: User authentification, content entities
 
+\begin{figure}[h]
+\begin{center}
+
+	\resizebox{1.0\textwidth}{0.7\textwidth} {
+
+	\begin{sequencediagram}
+	\newthread[white]{cl}{Client}
+	\newinst[1.7]{cntr}{Controller}
+	\newinst[1.3]{mgr}{Manager}
+	\newinst[1.3]{lc}{Local Cahce}
+	\newinst[1.3]{serv}{Service}
+	\newinst[1.3]{es}{External server}
+
+	\begin{call}{cl}{Configuration request}{cntr}{Response}
+
+		\begin{call}{cntr}{Invoke configuation manager}{mgr}{Response Data}
+			\begin{call}{mgr}{Check Session key}{lc}{Cache Response}\end{call}
+			\begin{sdblock}{alt}{if session key not in cache}
+				\begin{call}{mgr}{Get session key using UUID}{serv}{Session key}
+					\begin{call}{serv}{Session key request}{es}{Server response}
+					\end{call}
+				\end{call}
+			\end{sdblock}
+			\begin{call}{mgr}{Call data service}{serv}{JSON Data}
+				\begin{call}{serv}{Call REST API}{es}{JSON data}
+				\end{call}
+			\end{call}
+			\begin{call}{mgr}{Cache response}{lc}{}
+			\end{call}
+			\begin{call}{mgr}{Make DMO}{mgr}{DMO}\end{call}
+		\end{call}
+
+	\end{call}
+
+	\end{sequencediagram}
+	}
+
+\end{center}
+\caption{Sequence Diagram}
+\label{fig:arch_uml}
+\end{figure}
 
 \begin{figure}[h]
 \begin{center}
@@ -53,8 +107,6 @@ Components:
 	  middleware/.style={draw,very thick,shape=rectangle,inner sep=.3cm},
 	  source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.3cm},
 	  sink/.style={source,fill=green!20},
-	  dots/.style={gray,scale=2},
-	  to/.style={->,>=stealth',shorten >=1pt,semithick,font=\sffamily\footnotesize},
 	  every node/.style={align=center}]
 
 	  \tikzstyle{state} = [draw, very thick, fill=white, rectangle, minimum height=3em, minimum width=7em, node distance=8em, font={\sffamily\bfseries}]
