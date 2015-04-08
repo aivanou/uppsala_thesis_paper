@@ -1,0 +1,26 @@
+{
+  'accedo.ovp': {
+      'url': 'https://ovp-staging.cloud.accedo.tv',
+      'categories.movies': {
+	        'endpoint': '/category/{id}/movie'
+	      },
+      'categories.tvshows': {
+	        'endpoint': '/category/{id}/tvshow'
+	      },
+      'episodes': {
+	        'endpoint': '/episode'
+	      },
+      'tvshow': {
+	        'endpoint': '/tvshow/{id*}'
+	      },
+      'tvseason': {
+	        'endpoint': '/tvseason/{id*}'
+	      }
+    },
+  'accedo.appgrid': {
+      'url': 'https://appgrid-api.cloud.accedo.tv',
+      'metadata': {
+	        'endpoint': '/metadata'
+	      }
+    }
+}

@@ -10,6 +10,8 @@
 \usepackage{amssymb}
 \usepackage{ragged2e}
 \usepackage{multirow}
+\usepackage{array} % for defining a new column type
+\usepackage{varwidth} %for the varwidth minipage environment
 \usepackage{algorithmic}
 \usepackage[boxed]{algorithm}
 \usepackage{tabularx}
@@ -20,6 +22,8 @@
 \usepackage{fancyhdr}
 \usepackage{tikz}
 \usepackage{pgf-umlsd}
+\usepackage[toc,page]{appendix}
+\usepackage{listings}
 
 \usetikzlibrary{arrows}
 \usetikzlibrary{positioning,fit,calc}
@@ -41,22 +45,31 @@
 
 % new commands
 \newcommand\sign[1]{sign(#1)}
-
-
+\newcommand{\includecode}[2][c]{\lstinputlisting[caption=#2, escapechar=, style=custom#1]{#2}}
 
 \begin{document}
 
-% \setcounter{page}{1}
-% \tableofcontents
-% \newpage
+\newcolumntype{M}{>{\begin{varwidth}{4cm}}l<{\end{varwidth}}} %M is for Maximal column
 
-% \input{introduction.tex}
-% \input{theory.tex}
+\setcounter{page}{1}
+\tableofcontents
+
+\newpage
+
+\input{introduction.tex}
+\input{theory.tex}
 % \input{architecture_web.tex}
 \input{architecture_server.tex}
-% \input{results.tex}
+\input{new_architecture.tex}
 % \input{conclusion.tex}
 % \input{bibliography.tex}
+
+\newpage
+\bibliographystyle{amsplain}
+\bibliography{mybib}
+\newpage
+\input{appendix.tex}
+
 
 \end{document}
 

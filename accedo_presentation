@@ -1,0 +1,34 @@
+1. intro
+1.1 understanding of the Solution
+1.1.1 Brief description
+	How communication is going?
+	Why this way?
+	Node.js -- middleware backend, handles sessions+generated DMOs
+	Angular.js -- client layer, generates VMOs uses ajax
+1.1.2 Why angular?  -- tag customization, based of configuration from appgrid servers
+1.1.3 Why node.js? -- asynchronous request processing, as a result we can build single-page application by transferring routing to the angular.js framework
+1.1.4 Appgrid mention
+
+2. open site in browser
+2.1 show the amount of requests send
+2.2 describe briefly why it is like that
+2.3 is redis a best choice?
+    what other choises, solutions
+2.4 web cache instead of redis
+2.5 show performance comparison
+
+3. maybe we can reduce the amount of requests sending?
+3.1 can we somehow move VMO generation to the server side?
+3.2 what should be done? -- they should be generic, alowing to combine several dmos into one
+what are the problems with this?
+1. dependencies: one is dependant to another
+2. generic: the developer should send the query to the node.js server
+3.3 let's make step further, if we are making the vmos on server side, 
+	why do we need new via web app node js, that duplicates the logic of angular js but with DMOs? 
+
+3.4 show current architecture 
+3.5 show new architecture
+How can we go from first to the second picture? 
+Let's examine what data node.js operates with and angular.js operates with
+If we will examine the data we will notice the pattern, the dependencies.
+This is very similar to the DMBS

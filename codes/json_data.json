@@ -1,0 +1,54 @@
+{
+	"category_movies":{
+		"content_distributor":"accedo.ovp.categories.movies",
+		"path_parameters":{
+			"id":{
+				"type":"constant",
+				"values":["movies-action"]
+			}
+		}
+	},
+	"category.tvshows":{
+		"content_distributor":"accedo.ovp.categories.tvshows",
+		"path_parameters":{
+			"id":{
+				"type":"constant",
+				"values":["tv_shows_comedy","tv_shows_drama"]
+			}
+		}
+	},
+	"episodes":{
+		"content_distributor":"accedo.ovp.episodes"
+	},
+	"tvshow":{
+		"content_distributor":"accedo.ovp.tvshow",
+		"path_parameters":{
+			"id":{
+				"type":"dependency",
+				"parent":"episodes",
+				"parent_parameter_type":"constraint",
+				"path":"entries.metadata",
+				"constraints":[
+					{"key":"name","value":"VOD$tvShowId"}
+				],
+				"property":"value"
+			}
+		}
+	},
+	"tvseason" : {
+		"content_distributor":"accedo.ovp.tvseason", 
+		"path_parameters":{
+			"id":{
+				"type":"dependency",
+				"parent":"episodes",
+				"parent_parameter_type":"constraint",
+				"path":"entries.metadata",
+				"property":"value",
+				"constraints":[
+					{"key":"name","value":"VOD$tvSeasonId"}
+				]
+			}
+		}
+	}
+}
+

@@ -1,20 +1,88 @@
-\section{Architecture Server}
+\section{Current company's solution}
 
 \subsection{Server Architecture}
 
-The company architecture contains the following components: Client Layer, Middleware server, Middleware Cache, Metadata Server and Content Servers. The brief architecture overview is presented on figure \ref{fig:arch_overview}. 
+The company architecture contains the following components: Client Application, Middleware server, Middleware Cache, Metadata Server and Content Servers. The brief architecture overview is presented on figure \ref{fig:arch_overview}. 
 
-The client is a web application developed using javascript, HTML, CSS framework and Model View Controller pattern. It communicates with middleware server through REST services based on HTTP protocol. The client has several components: Controllers, Managers, Services. 
 
-The contollers validate the user data, invoke corresponding managers and render data to the view objects represented by HTML pages. The managers are implemented using Facade pattern[link]. They hold and manage services, construct View Model Objects from service responses and send them back to controllers. 
+% \begin{figure}[h]
+% \begin{center}
 
-The services are represent the communication layer between the client application and the middleware server. They communicate via REST services based on HTTP protocol. This brings flexibility to the architecture and makes components loosely coupled.[describe why it is good?]. 
+% 	\begin{tikzpicture}[
+% 	  font=\sffamily,
+% 	  every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=2cm},
+% 	  client/.style={draw,thick,ellipse,fill=yellow!20,inner sep=.3cm},
+% 	  middleware/.style={draw,very thick,shape=rectangle,inner sep=.3cm},
+% 	  source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.3cm},
+% 	  sink/.style={source,fill=green!20},
+% 	  every node/.style={align=center}]
+
+% 	  \tikzstyle{state} = [draw, very thick, fill=white, rectangle, minimum height=3em, minimum width=7em, node distance=8em, font={\sffamily\bfseries}]
+% 	  \tikzstyle{stateEdgePortion} = [black,thick];
+% 	  \tikzstyle{stateEdge} = [stateEdgePortion,->];
+% 	  \tikzstyle{edgeLabel} = [pos=0.5, text centered, font={\sffamily\small}];
+
+
+% 	  % Position the nodes using a matrix layout
+% 	  \matrix{
+% 	    \& \node[client] (client) {Clients}; \& \\
+
+% 	    \& \node[middleware] (middleware) {Middleware}; \& \\
+
+% 	    \node[sink] (mtserver) {Metadata Server};
+% 	      \& \& \node[sink] (ovp) {OVP}; \\
+% 	  };
+
+% 	  \draw ($(client.south) + (-.5em,0)$) 
+% 	      edge[stateEdge] node[edgeLabel,xshift=-1em, yshift=-1em]{\emph{Request}} 
+% 	      ($(middleware.north) + (-.5em,0)$);
+% 	  \draw ($(middleware.north) + (.5em,0)$) 
+% 	      edge[stateEdge] node[edgeLabel,xshift=4em]{\emph{Data}} 
+% 	      ($(client.south) + (.5em,0)$);
+
+
+% 	  \draw ($(middleware.west) + (0,.5em)$) 
+% 	      edge[stateEdge] node[edgeLabel,xshift=-4em, yshift=-1em]{\emph{Request}} 
+% 	      ($(mtserver.north) + (-.5em,0)$);
+% 	  \draw ($(mtserver.north) + (.5em,0)$) 
+% 	      edge[stateEdge] node[edgeLabel,xshift=2em]{\emph{Session ID}} 
+% 	      ($(middleware.west) + (0,-.5em)$);
+
+
+% 	  \draw ($(middleware.east) + (0,.5em)$) 
+% 	      edge[stateEdge] node[edgeLabel,xshift=-2em, yshift=-1em]{\emph{Request}} 
+% 	      ($(ovp.north) + (.5em,0)$);
+% 	  \draw ($(ovp.north) + (-.5em,0)$) 
+% 	      edge[stateEdge] node[edgeLabel,xshift=2em]{\emph{Data Resp}} 
+% 	      ($(middleware.east) + (0,-.5em)$);
+
+
+% 	\end{tikzpicture}
+
+% \end{center}
+% \caption{Architecture overview}
+% \label{fig:arch_overview}
+% \end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=\textwidth]{images/thesis_global_architecture_existing.png}
+    \caption{Global architecture overveiw}
+    \label{fig:arch_overview}
+\end{figure}
+
+
+The client is a web application developed using Javascript, HTML, CSS framework and Model View Controller pattern. It communicates with middleware server through REST services based on HTTP protocol. The client has several components: Controllers, Managers, Services. 
+
+The contollers validate the user data, invoke corresponding managers and render data to the view objects represented by HTML pages. The managers are implemented using Facade pattern\cite{DesignPatterns}. They hold and manage services, construct View Model Objects from service responses and send them back to controllers. 
+
+The services represent the communication layer between the client application and the middleware server. They communicate via REST services based on HTTP protocol. This brings flexibility to the architecture and makes components loosely coupled.[describe why it is good?]. 
 
 The middleware server serves as a transparent layer between client and inner servers. The main goal of this server is to translate requests from clients to the format understandable by the metadata server or content servers.  
 
-Content servers are applications provided by customers. They are the main sources of information that needs to be presented to the clients. They can be represented by the movie entities or music distributors.
+Content servers are applications provided by customers. They are the main sources of information that needs to be presented by the client application. They can be represented by the movie entities or music distributors.
 
-The metadata server is the company developed application that stores and processes auxiliary and configurational requests. The requests can be: 
+The metadata server is the company developed application that stores and processes auxiliary and configurational information. The requests can be: 
 
 \begin{itemize}
 	\item Data gathering - required fo analytical purposes
@@ -23,221 +91,7 @@ The metadata server is the company developed application that stores and process
 	\item Client and midldeware configuration
 \end{itemize} 
 
-The client sends requests to the middleware server. The middleware server handles client requests and sends back appropriate responses. The response can be one of two types: Configurational or Data demand. If response is configurational the middleware server redirects it to the Metadata server, otherwise it redirects the request to the Content server. The middleware supports local cache and caches every response that is not assosiated with user session.
-
-
-\subsection{Middleware server architecture}
-
-The middleware server is written on server side javascript language, using asynchronous server Node.js[link?]. The server is developed using Model View Controller (MVC) pattern and communicates with other components through REST services. As a result, the server components are loosely coupled with each other, that gives great flexibility in changing and replacing components and simplifies testing. 
-
-The middleware contains the following components: Controllers, Managers, Services, Configuration and Data Model Object builders. 
-
-The controllers accept requests from clients. They validate user data and call corresponding managers.
-
-The managers implement facade pattern[link]. They aggregate multiple services and redirect requests to them. They gather the data from services and build immutable Data Model objects(DMOs). These DMOs are sent back to the client as responses.
-
-Services communicate with metadata and content servers. They aggregate the cache layer and react according to the following rules:
-They check if the data is located in the local cache. If service observes cache hit, it will check the object TTL[specify description] and send corresponding object back to the manager. On the other hand, if the cache miss occures, it will send the GET request through the REST protocol to the metadata server or content server, store the response locally for predefined period of time and send it back to the manager.
-
-The client can make two types of requests: configurational and data demand requests.
-The configurational request has the following purposes:
-\begin{itemize}
-	\item Provides configuration parameters for both middleware server and client application
-	\item Writes user activy
-	\item Checks the health of metadata server
-	\item Get Content Server url
-	\item User settings and preferences
-	\item Analytics
-\end{itemize}
-
-
-The data demand request is a request to the content servers. Content servers are customer servers. It means that the response can have any structure and doesn't have predefined structure. 
-
-The controll flow can be described as following:
-
-The controller recieves the request, validates user data and redirects it to the assigned manager. The manager  invokes corresponding service. When the client makes the data demand request, the manager invokes content services that redirect request to the assigned content server. The response then is stored in the cache, translated into Data Model object(DMO) and transferred back to the client in JSON format. The builders are in charge for translating JSON data into Persistent Data Model objects. For every DMO there is an assigned manager and service. As an example, if the content server responses with video object, there will be VideoManager and VideoService components.   
-
-The client layer and middleware layer are loosely coupled and communicate with each other through REST services. It gives application great flexibility.
-
-
-
-\subsection{Session management}
-
-In order to process communication between middleware server and inner servers, the security layer was implemented. The security is implemented through the dynamic session management.
-
-The session consists of two parts: 
-\begin{itemize}
-	\item The client session
-	\item The middleware session
-\end{itemize}
-
-The client session is represented by the unique session identifier and the browres id. These parameters are generated by the middleware server and transferred to the client through the Set-Cookie header. The browser remembers the data and sends it back with every request in Cookie header.
-
-The middleware session is generated when the the client makes the initial request. It contains the metadata session key and user session, if the user is authenticated. The metadata session is obtain by making a request to the metadata server. The middleware server sends the aplication key parameter, which is specified in the configuration file and browser id. The metadata server checks the validation of the application key and generates new session for the middleware server. The middleware server assignes this session to the client and stores it locally in memory. Every time when the client will communicate with the middleware server it will send the client's session data. The server will find the metadata session associated with the client and retrieve the medata session. Using this session the middleware can make configurational requests to the metadata session.  
-
-
-[sequence diagram of making authorization for configuration requests]
-
-\begin{figure}[h]
-\begin{center}
-
-	\resizebox{1.1\textwidth}{0.5\textwidth} {
-
-	\begin{sequencediagram}
-	\newthread[white]{cl}{Client}
-	\newinst[1.5]{md}{Middleware server}
-	\newinst[3.0]{mt}{Metadata server}
-
-	\begin{call}{cl}{RequestSession}{md}{Client session}
-
-		\begin{call}{md}{GenerateSessionId}{md}{ClienSessionId} \end{call}
-		\begin{call}{md}{GenerateBrowserId}{md}{BrowserId} \end{call}
-		\begin{call}{md}{RequestMetadataSession}{mt}{MetadataSession} 
-			\begin{call}{mt}{ValidataeData}{mt}{}\end{call}
-		\end{call}
-
-	\end{call}
-
-	\end{sequencediagram}
-	}
-
-\end{center}
-\caption{Sequence Diagram of Middleware Session generation}
-\label{fig:arch_sess_uml}
-\end{figure}
-
-
-\subsection{Drawbacks}
-
-After careful examination, two categories of problems were defined: Client side drawbacks and Middleware side drawbacks. 
-
-In order to present the page, the client needs to generate a View Model Object(VMO). The VMO contains several Data Model objects(DMOs). The client makes request for every DMO, aggregates the response, generates VMO from DMOs and renders it to the html view. The drawback is that the client has to make several HTTP requests in order to process one VMO. It would be better for client to make a request for VMO instead of DMO. This approach has several advantages: the client will make less HTTP requests, that will increase the performance by reducing the latency, it will simplify the client logic, because the client will not be requered to generate VMOs from DMOs. 
-
-Another problem with the current client implementation is that it is not generic. If the new content server will be introduced, a lot of code have to be changed on the client side in order to impelment the new logic.
-
-The client can maintain the caching layer that will cache VMOs from the responses. 
-
-The client implements MVC pattern, which produces dublication with middleware server. This approach increases the complexity of the system, the developers should support boch client and middleware MVC applications. We can simplify client and assign two tasks to it: caching and rendering VMOs.
-
-On the middleware side, the DMOs are not generic. The purpose of the middleware server is to serve as a transparent layer, but without dynamic DMO generation a lot of code has to be changed when the new content server is introduced.
-
-The middleware cache can be replaced by the Content Delivery Network(CDN). The middleware caches only information that is common for every user. This work can be done by the CDN edge servers. These will decrease the middleware complexity, decrease the cost of maintaining middleware server.
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=\textwidth]{images/via_manager_1.png}
-    \caption{Manager workflow}
-    \label{fig:via_manager}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-	\includegraphics[width=\textwidth]{images/via_service_1.png}
-    \caption{Service workflow}
-    \label{fig:via_manager}
-\end{figure}
-
-
-\begin{figure}[h]
-\begin{center}
-
-	\resizebox{1.0\textwidth}{0.7\textwidth} {
-
-	\begin{sequencediagram}
-	\newthread[white]{cl}{Client}
-	\newinst[1.7]{cntr}{Controller}
-	\newinst[1.3]{mgr}{Manager}
-	\newinst[1.3]{lc}{Local Cahce}
-	\newinst[1.3]{serv}{Service}
-	\newinst[1.3]{es}{External server}
-
-	\begin{call}{cl}{Configuration request}{cntr}{Response}
-
-		\begin{call}{cntr}{Invoke configuation manager}{mgr}{Response Data}
-			\begin{call}{mgr}{Check Session key}{lc}{Cache Response}\end{call}
-			\begin{sdblock}{alt}{if session key not in cache}
-				\begin{call}{mgr}{Get session key using UUID}{serv}{Session key}
-					\begin{call}{serv}{Session key request}{es}{Server response}
-					\end{call}
-				\end{call}
-			\end{sdblock}
-			\begin{call}{mgr}{Call data service}{serv}{JSON Data}
-				\begin{call}{serv}{Call REST API}{es}{JSON data}
-				\end{call}
-			\end{call}
-			\begin{call}{mgr}{Cache response}{lc}{}
-			\end{call}
-			\begin{call}{mgr}{Make DMO}{mgr}{DMO}\end{call}
-		\end{call}
-
-	\end{call}
-
-	\end{sequencediagram}
-	}
-
-\end{center}
-\caption{Sequence Diagram of Middleware server request process}
-\label{fig:arch_uml}
-\end{figure}
-
-\begin{figure}[h]
-\begin{center}
-
-	\begin{tikzpicture}[
-	  font=\sffamily,
-	  every matrix/.style={ampersand replacement=\&,column sep=1cm,row sep=2cm},
-	  client/.style={draw,thick,ellipse,fill=yellow!20,inner sep=.3cm},
-	  middleware/.style={draw,very thick,shape=rectangle,inner sep=.3cm},
-	  source/.style={draw,thick,rounded corners,fill=yellow!20,inner sep=.3cm},
-	  sink/.style={source,fill=green!20},
-	  every node/.style={align=center}]
-
-	  \tikzstyle{state} = [draw, very thick, fill=white, rectangle, minimum height=3em, minimum width=7em, node distance=8em, font={\sffamily\bfseries}]
-	  \tikzstyle{stateEdgePortion} = [black,thick];
-	  \tikzstyle{stateEdge} = [stateEdgePortion,->];
-	  \tikzstyle{edgeLabel} = [pos=0.5, text centered, font={\sffamily\small}];
-
-
-	  % Position the nodes using a matrix layout
-	  \matrix{
-	    \& \node[client] (client) {Clients}; \& \\
-
-	    \& \node[middleware] (middleware) {Middleware}; \& \\
-
-	    \node[sink] (mtserver) {Metadata Server};
-	      \& \& \node[sink] (ovp) {OVP}; \\
-	  };
-
-	  \draw ($(client.south) + (-.5em,0)$) 
-	      edge[stateEdge] node[edgeLabel,xshift=-1em, yshift=-1em]{\emph{Request}} 
-	      ($(middleware.north) + (-.5em,0)$);
-	  \draw ($(middleware.north) + (.5em,0)$) 
-	      edge[stateEdge] node[edgeLabel,xshift=4em]{\emph{Data}} 
-	      ($(client.south) + (.5em,0)$);
-
-
-	  \draw ($(middleware.west) + (0,.5em)$) 
-	      edge[stateEdge] node[edgeLabel,xshift=-4em, yshift=-1em]{\emph{Request}} 
-	      ($(mtserver.north) + (-.5em,0)$);
-	  \draw ($(mtserver.north) + (.5em,0)$) 
-	      edge[stateEdge] node[edgeLabel,xshift=2em]{\emph{Session ID}} 
-	      ($(middleware.west) + (0,-.5em)$);
-
-
-	  \draw ($(middleware.east) + (0,.5em)$) 
-	      edge[stateEdge] node[edgeLabel,xshift=-2em, yshift=-1em]{\emph{Request}} 
-	      ($(ovp.north) + (.5em,0)$);
-	  \draw ($(ovp.north) + (-.5em,0)$) 
-	      edge[stateEdge] node[edgeLabel,xshift=2em]{\emph{Data Resp}} 
-	      ($(middleware.east) + (0,-.5em)$);
-
-
-	\end{tikzpicture}
-
-\end{center}
-\caption{Architecture overview}
-\label{fig:arch_overview}
-\end{figure}
+The client sends requests to the middleware server. The middleware server handles client requests and sends back appropriate responses. The response can be one of two types: Configurational or Data demand. If response is configurational the middleware server redirects it to the Metadata server, otherwise it redirects the request to the Content server. The middleware supports local cache and caches every response that is not assosiated with user session. The message exchanging between architecture components is depicted on figure \ref{fig:arch_uml}.
 
 
 \begin{figure}[h]
@@ -294,5 +148,172 @@ The middleware cache can be replaced by the Content Delivery Network(CDN). The m
 \caption{Sequence Diagram of message exchanging}
 \label{fig:arch_uml}
 \end{figure}
+
+\subsection{Middleware server architecture}
+
+The middleware server is written on server side Javascript language, using asynchronous server Node.js[link?]. The server is developed using Model View Controller (MVC) pattern and communicates with other components through REST services. As a result, the server components are loosely coupled with each other, that gives great flexibility in changing and replacing components and simplifies testing. 
+
+The middleware contains the following components: Controllers, Managers, Services, Configuration and Data Model Object builders. The interraction between components is presented on figure \ref{fig:ms_req}.
+
+\begin{figure}[h]
+\begin{center}
+
+	\resizebox{1.0\textwidth}{0.7\textwidth} {
+
+	\begin{sequencediagram}
+	\newthread[white]{cl}{Client}
+	\newinst[1.7]{cntr}{Controller}
+	\newinst[1.3]{mgr}{Manager}
+	\newinst[1.3]{lc}{Local Cahce}
+	\newinst[1.3]{serv}{Service}
+	\newinst[1.3]{es}{External server}
+
+	\begin{call}{cl}{Configuration request}{cntr}{Response}
+
+		\begin{call}{cntr}{Invoke configuation manager}{mgr}{Response Data}
+			\begin{call}{mgr}{Check Session key}{lc}{Cache Response}\end{call}
+			\begin{sdblock}{alt}{if session key not in cache}
+				\begin{call}{mgr}{Get session key using UUID}{serv}{Session key}
+					\begin{call}{serv}{Session key request}{es}{Server response}
+					\end{call}
+				\end{call}
+			\end{sdblock}
+			\begin{call}{mgr}{Call data service}{serv}{JSON Data}
+				\begin{call}{serv}{Call REST API}{es}{JSON data}
+				\end{call}
+			\end{call}
+			\begin{call}{mgr}{Cache response}{lc}{}
+			\end{call}
+			\begin{call}{mgr}{Make DMO}{mgr}{DMO}\end{call}
+		\end{call}
+
+	\end{call}
+
+	\end{sequencediagram}
+	}
+
+\end{center}
+\caption{Sequence Diagram of Middleware server request process}
+\label{fig:ms_req}
+\end{figure}
+
+The controllers accept requests from clients. They validate user data and invoke corresponding managers.
+
+The managers implement facade pattern[link]. They aggregate multiple services and redirect requests to them. They gather the data from services and build immutable Data Model Objects(DMOs). These DMOs are sent back to the client as responses. The workflow of managers is depicted on figure \ref{fig:via_manager}.
+
+Services communicate with metadata and content servers. They aggregate the cache layer and react according to the following rules:
+They check if the data is located in the local cache. If service observes cache hit, it will check the object TTL[specify description] and send corresponding object back to the manager. On the other hand, if the cache miss occures, it will send the GET request through the REST protocol to the metadata server or content server, store the response locally for predefined period of time and send it back to the manager. The workflow of services is presented on figure \ref{fig:via_service}.
+
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=\textwidth]{images/via_manager_1.png}
+    \caption{Manager workflow}
+    \label{fig:via_manager}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=\textwidth]{images/via_service_1.png}
+    \caption{Service workflow}
+    \label{fig:via_service}
+\end{figure}
+
+
+The client can make two types of requests: configurational and data demand requests.
+The configurational request has the following purposes:
+\begin{itemize}
+	\item Provides configuration parameters for both middleware server and client application
+	\item Writes user activy
+	\item Checks the health of metadata server
+	\item Get Content Server url
+	\item User settings and preferences
+	\item Analytics
+\end{itemize}
+
+
+The data demand request is a request to the content servers. Content servers are customer servers. It means that the response can have any structure and doesn't have predefined structure. 
+
+The controll flow can be described as following:
+
+The controller recieves the request, validates user data and redirects it to the assigned manager. The manager  invokes corresponding service. When the client makes the data demand request, the manager invokes content services that redirect request to the assigned content server. The response then is stored in the cache, translated into Data Model object(DMO) and transferred back to the client in JSON format. The builders are in charge for translating JSON data into Persistent Data Model objects. For every DMO there is an assigned manager and service. As an example, if the content server responses with video object, there will be VideoManager and VideoService components.   
+
+The client layer and middleware layer are loosely coupled and communicate with each other through REST services. It gives application great flexibility.
+
+
+
+\subsection{Session management}
+
+
+In order to process communication between middleware server and inner servers, the security layer was implemented. The security is implemented through the dynamic session management.
+
+The session consists of two parts: 
+\begin{itemize}
+	\item The client session
+	\item The middleware session
+\end{itemize}
+
+The client session is represented by the unique session identifier and the browres id. These parameters are generated by the middleware server and transferred to the client through the Set-Cookie header. The browser remembers the data and sends it back with every request in Cookie header.
+
+The middleware session is generated when the the client makes the initial request. It contains the metadata session key and user session, if the user is authenticated. The metadata session is obtain by making a request to the metadata server. The middleware server sends the aplication key parameter, which is specified in the configuration file and browser id. The metadata server checks the validation of the application key and generates new session for the middleware server. The middleware server assignes this session to the client and stores it locally in memory. Every time when the client will communicate with the middleware server it will send the client's session data. The server will find the metadata session associated with the client and retrieve the medata session. Using this session the middleware can make configurational requests to the metadata session. The sequence diagram of session management is presented on figure \ref{fig:arch_sess_uml}.
+
+The purpose of sessions is to distinct users and provide corresponding analytics to the customers.
+
+
+\begin{figure}[h]
+\begin{center}
+
+	\resizebox{1.1\textwidth}{0.5\textwidth} {
+
+	\begin{sequencediagram}
+	\newthread[white]{cl}{Client}
+	\newinst[1.5]{md}{Middleware server}
+	\newinst[3.0]{mt}{Metadata server}
+
+	\begin{call}{cl}{RequestSession}{md}{Client session}
+
+		\begin{call}{md}{GenerateSessionId}{md}{ClienSessionId} \end{call}
+		\begin{call}{md}{GenerateBrowserId}{md}{BrowserId} \end{call}
+		\begin{call}{md}{RequestMetadataSession}{mt}{MetadataSession} 
+			\begin{call}{mt}{ValidataeData}{mt}{}\end{call}
+		\end{call}
+
+	\end{call}
+
+	\end{sequencediagram}
+	}
+
+\end{center}
+\caption{Sequence Diagram of Middleware Session generation}
+\label{fig:arch_sess_uml}
+\end{figure}
+
+
+\subsection{Model objects}
+
+The architecture uses the Data model objects, Video Model Objects and Application model objects.
+The purpose of the middleware server is to take the data from content servers, store it in Redis, adjust data from Metadata server if necessary and send back to the client application. The data from the content servers differs from one to another, as a result the structure for representing content server objects should be generated dynamically. These objects are called data model objects(DMO). They represent the entities gathered from the content servers. It can be information about videos, music or any other entity. The DMO is generated by the DMO builders from JSON.
+
+The middleware server generated DMOs and sends them to the client application. The client gatheres several DMOs and constructs View Model Object(VMO). This object is than presented to the users. As a result, the VMO is constructed on the client side. For every html page single VMO is constructed. 
+
+The Application model object(AMO) is the array of View Model Objects. The AMO represents the information and objects that can be fetched from the single content server.
+
+\subsection{Drawbacks of the current architecture}
+
+After careful examination, two categories of problems were defined: Client side drawbacks and Middleware side drawbacks. 
+
+In order to present the page, the client needs to generate a View Model Object(VMO). The VMO contains several Data Model objects(DMOs). The client makes request for every DMO, aggregates the response, generates VMO from DMOs and renders it to the html view. The drawback is that the client has to make several HTTP requests in order to generate single VMO. It would be better for client to make a request for VMO instead of DMO. This approach has several advantages: the client will make less HTTP requests, that will increase the performance by reducing the latency, it will simplify the client logic, because the client will not be requered to generate VMOs from DMOs. 
+
+Another problem with the current client implementation is that it is not generic. If the new content server will be introduced, a lot of code have to be changed on the client side in order to impelment the new logic.
+
+The client can maintain the caching layer that will cache VMOs from the responses. 
+
+The client implements MVC pattern, which produces dublication with middleware server. This approach increases the complexity of the system, the developers should support boch client and middleware MVC applications. We can simplify client and assign two tasks to it: caching and rendering VMOs.
+
+On the middleware side, the DMOs are not generic. The purpose of the middleware server is to serve as a transparent layer, but without dynamic DMO generation a lot of code has to be changed when the new content server is introduced.
+
+The middleware cache can be replaced by the Content Delivery Network(CDN). The middleware caches only information that is common for every user. This work can be done by the CDN edge servers. These will decrease the middleware complexity, decrease the cost of maintaining middleware server.
+
+
 
 \newpage

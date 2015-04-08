@@ -1,0 +1,206 @@
+\section{Testing}
+
+Testing parameters:
+1. Amount of requests per secong
+2. Concurrent clients
+3. Throughoutput
+4. Code complexity
+5. Supporting the solution
+6. Time per requests
+
+% according to what parameters did you test
+% what are the testing criterias
+% what type of tests do you need to make
+% 
+
+\subsection{Testing frameworks}
+
+The following frameworks where selected for testing: Apache benchmark tool, Jmeter and Selenium. [urls for them]
+The apache benchmark tool allows us to make load tests in order to understand what solution works faster and can serve more requests per second. It makes many concurrent requests to the single entity.
+
+The Jmeter was selected in order to emulate the requests to the different pages. Because of the specific architecture of the middleware server and client application, in order to render single page client has to make several requests for getting DMOs. Using JMeter we can emulate users that are making requests to the different pages. 
+% describe JMeter testing configuration
+For each solution a single test plan was developed. The test plan emulates user requests to the resources. A single user request consists of the several requests for getting DMO objects. 
+
+% describe what testing frameworks did you select and why
+
+There are several types of proxy servers that can act as a reversed proxies.
+
+Properties:
+1. Availability
+2. Configurational
+3. Performance(amount of requests processed, memory usage)
+
+Candidates:
+Varnish
+Squid in reversed mode
+Apache in proxy mode
+Nginx?
+
+Benchmarking tools:
+Apache benchmark testing tool
+Jmeter
+
+Use cases for requests: (selection of the optimal request/response headers for the dynamic and static contents)
+1. LastModified and If-Modified-Since
+2. Cache-Control: s-maxage, (public, private?, must-revalidate)
+3. Etag and If-None-Match
+4. Combination: Etag + LastModified
+5. Combination: Etag + LastModified + CacheControl
+
+Optimal for static content:
+Optimal for dynamic content:
+
+
+\newpage
+
+
+% The most fundamental difference between Squid and Varnish is that Squid is forward proxy that can be a configured as a reverse proxy whereas Varnish is built from the ground up to be a reverse proxy.
+
+% So, in principle Varnish is better suited than Squid to do reverse proxy HTTP. However, Squid is a very mature product and has had time to accumulate a lot of features that still are not available in Varnish. Both projects are used by huge websites and both of them can do almost anything.
+
+% The main advantages of Squid over Varnish, as I see them, are:
+
+%     Built in SSL support. Varnish needs stud, nginx or stunnel to do SSL.
+%     Better support for Range and streaming delivery of objects.
+%     Support for antivirus-plugins
+
+
+% On the other hand, Varnish has:
+
+%     An absolutely amazing configuration system. VCL gives unmatched flexiblity to run policies. Want to rewrite URLs coming from a certain user-agent requesting a specific URL coming from a specific network? Easy. With Squid, that configuration will be quite complex (if at all possible).
+%     Better performance and scalability. Squid is a single process running on only one CPU core, whereas Varnish is threaded. Artur Bergman reported having a Varnish server serving 60K req/sec on real life traffic. That's more than most of us ever see and I doubt that you'll be able to see Squid push those kind of numbers.
+%     Better and more flexible invalidation support. With Varnish you can invalidate content from cache based on more or less everything. I can elaborate on this.
+
+Open Web caches:
+Varnish
+Squid
+Apache proxy mod
+Nginx
+
+Measuring tools:
+Jmeter
+Apache benchmarking tool 
+
+
+Squid: 
+Forward proxy server, can be configured as a reversed proxy.
+In order to cache less than 60 seconds, one should specify the cache-control headers (Last-Modified),
+for dynamic objects it is quite hard to do. Even, if the Last-Modified was specified for cachanging for every request, squid will not make another request to server until s-maxage seconds pass.
+
+
+Web cache as a load balancer:
+Testing tool: apache benchmark 
+
+Configuration:
+Single request to the server through the varnish:
+    ab -r -c 100 -n 1000    http://127.0.0.1:6081/
+Redis turned on
+
+Output: 
+
+Concurrency Level:      100
+Time taken for tests:   40.510 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      10177208 bytes
+HTML transferred:       9614000 bytes
+Requests per second:    24.69 [#/sec] (mean)
+Time per request:       4051.013 [ms] (mean)
+Time per request:       40.510 [ms] (mean, across all concurrent requests)
+Transfer rate:          245.34 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   2.0      0       8
+Processing:   458 3681 652.4   3743    6194
+Waiting:      458 3666 650.9   3728    6120
+Total:        464 3682 651.2   3743    6194
+
+Percentage of the requests served within a certain time (ms)
+  50%   3743
+  66%   3788
+  75%   3806
+  80%   3823
+  90%   3889
+  95%   4109
+  98%   5417
+  99%   5817
+ 100%   6194 (longest request)
+
+
+Without web cache:
+
+Concurrency Level:      100
+Time taken for tests:   46.225 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      10105660 bytes
+HTML transferred:       9614000 bytes
+Requests per second:    21.63 [#/sec] (mean)
+Time per request:       4622.455 [ms] (mean)
+Time per request:       46.225 [ms] (mean, across all concurrent requests)
+Transfer rate:          213.50 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.8      0       4
+Processing:   575 4435 1978.4   3787   11812
+Waiting:      575 4435 1978.4   3787   11812
+Total:        579 4435 1978.2   3787   11812
+
+Percentage of the requests served within a certain time (ms)
+  50%   3787
+  66%   3839
+  75%   3907
+  80%   4411
+  90%   7697
+  95%   9467
+  98%  10890
+  99%  11237
+ 100%  11812 (longest request)
+
+
+
+Without cache
+Varnish 
+
+...........................................................
+net tests:
+Test: ab -r -c 100 -n 1000    http://127.0.0.1:9000
+
+Node.js+Redis: 
+
+Concurrency Level:      100
+Time taken for tests:   45.977 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      10105692 bytes
+HTML transferred:       9614000 bytes
+Requests per second:    21.75 [#/sec] (mean)
+Time per request:       4597.743 [ms] (mean)
+Time per request:       45.977 [ms] (mean, across all concurrent requests)
+Transfer rate:          214.65 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.8      0       4
+Processing:  3618 4413 1725.6   3729   12484
+Waiting:     3618 4413 1725.6   3729   12484
+Total:       3618 4413 1726.1   3730   12486
+
+Percentage of the requests served within a certain time (ms)
+  50%   3730
+  66%   3767
+  75%   3808
+  80%   3904
+  90%   6803
+  95%   8554
+  98%  10907
+  99%  11835
+ 100%  12486 (longest request)
+
+
+cost
+code complexity
+amount of time
