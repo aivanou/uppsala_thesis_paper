@@ -20,4 +20,27 @@
 	 \lstinputlisting[breaklines, caption=Content Provider Dictionary ]{codes/content_provider.json}
 
 
+\chapter{Appendix D}
+
+\begin{lstlisting}
+	var parser = new HQLParser();
+	var j = parser
+		  .select('category_movies', 'accedo.ovp.categories.movies')
+		  .setConstantParameter('id', ['movies-action'])
+		  .setQueryParameter('pageSize', 2)
+		  .select('category_tvshows', 'accedo.ovp.categories.tvshows')
+		  .setConstantParameter('id', ['tv_shows_comedy'])
+		  .setQueryParameter('pageSize', 2)
+		  .select('episodes', 'accedo.ovp.episodes')
+		  .setQueryParameter('pageSize', 2)
+		  .select('tvshow', 'accedo.ovp.tvshow')
+		  .setParentParameter('id', 'episodes', 'entries.metadata', 'value')
+		  .addConstraints('id', [{key: "name", value: "VOD$tvShowId"}])
+		  .select('tvseason', 'accedo.ovp.tvseason')
+		  .setParentParameter('id', 'episodes', 'entries.metadata', 'value')
+		  .addConstraints('id', [{key: "name", value: "VOD$tvSeasonId"}])
+		  .build();
+
+\end{lstlisting}
+
 \end{appendices}
