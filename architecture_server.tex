@@ -76,9 +76,9 @@ The client is a web application developed using Javascript, HTML, CSS framework 
 
 The contollers validate the user data, invoke corresponding managers and render data to the view objects represented by HTML pages. The managers are implemented using Facade pattern\cite{DesignPatterns}. They hold and manage services, construct View Model Objects from service responses and send them back to controllers. 
 
-The services represent the communication layer between the client application and the middleware server. They communicate via REST services based on HTTP protocol. This brings flexibility to the architecture and makes components loosely coupled.[describe why it is good?]. 
+The services are responsible for communication layer between the client application and the middleware server. They communicate via REST services based on HTTP protocol. This brings flexibility to the architecture and makes components loosely coupled.[describe why it is good?]. 
 
-The middleware server serves as a transparent layer between client and inner servers. The main goal of this server is to translate requests from clients to the format understandable by the metadata server or content servers.  
+The middleware server serves as a transparent layer between client and inner servers(Content providers). The main goal of this server is to translate requests from clients to the format understandable by the metadata server or content servers.  
 
 Content servers are applications provided by customers. They are the main sources of information that needs to be presented by the client application. They can be represented by the movie entities or music distributors.
 
@@ -199,10 +199,10 @@ The middleware contains the following components: Controllers, Managers, Service
 
 The controllers accept requests from clients. They validate user data and invoke corresponding managers.
 
-The managers implement facade pattern[link]. They aggregate multiple services and redirect requests to them. They gather the data from services and build immutable Data Model Objects(DMOs). These DMOs are sent back to the client as responses. The workflow of managers is depicted on figure \ref{fig:via_manager}.
+The managers, as well as client application manager components, implement facade pattern. They aggregate multiple services and redirect requests to them. They gather the data from services and build immutable Data Model Objects(DMOs). These DMOs are sent back to the client as responses. The workflow of managers is depicted on figure \ref{fig:via_manager}.
 
 Services communicate with metadata and content servers. They aggregate the cache layer and react according to the following rules:
-They check if the data is located in the local cache. If service observes cache hit, it will check the object TTL[specify description] and send corresponding object back to the manager. On the other hand, if the cache miss occures, it will send the GET request through the REST protocol to the metadata server or content server, store the response locally for predefined period of time and send it back to the manager. The workflow of services is presented on figure \ref{fig:via_service}.
+They check if the data is located in the local cache. If service observes cache hit, it will check the object TTL(time to live, the time, usually in seconds, that represents how long object can be considered fresh without hitting database) and send corresponding object back to the manager. On the other hand, if the cache miss occures, it will send the GET request through the REST protocol to the metadata server or content server, store the response locally for predefined period of time and send it back to the manager. The workflow of services is presented on figure \ref{fig:via_service}.
 
 
 \begin{figure}[h]
@@ -232,7 +232,7 @@ The configurational request has the following purposes:
 \end{itemize}
 
 
-The data demand request is a request to the content servers. Content servers are customer servers. It means that the response can have any structure and doesn't have predefined structure. 
+The data demand request is a request to the content servers. Content servers are customer servers. It means that the response doesn't have predefined structure and can have any structure specified by customer services. 
 
 The controll flow can be described as following:
 

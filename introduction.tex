@@ -11,7 +11,7 @@ One of the solutions, is a simple direct communication between client and servic
 
 The different solution will be to introduce the middle layer between the client and external services. The client will communicate with middle layer using predefined protocol, middle layer will gather data from external services and send it to the client. This approach has several benefits: every application will be written with standardised communication API, defined by the middle layer; if external API changes only middle layer should be rewritten; the response time can be decreased by caching the data in the middle layer. 
 
-Another solution can be the usage of CDN (Content Delivery Networks). The application will send the requests directly to the external services, but the request will be intercepted and handled by the CDN Edge Servers that are located between Application and External Services. This solution requires dynamic usrage of HTTP Cache-Control headers. The advantage of using CDN is that the developer should not maintian the middleware service, the results will be cached somewhere on the way between Application and External services, therefore the response to the final user will be faster. On the other hand, the drawbacks are: it is difficult to configure CDN to process dynamic content, the developer needs to write the communication layer for every external service. 
+Another solution can be the usage of CDN (Content Delivery Networks). The application will send the requests directly to the external services, but the request will be intercepted and handled by the CDN Edge Servers that are located between Application and External Services. This solution requires dynamic usage of HTTP Cache-Control headers. The advantage of using CDN is that the developer should not maintian the middleware service, the results will be cached somewhere on the way between Application and External services, therefore the response to the final user will be faster. On the other hand, the drawbacks are: it is difficult to configure CDN to process dynamic content, the developer needs to write the communication layer for every external service. 
 
 The project tries to break the connection between applications and external services by providing the middle layer. The applications will communicate with the middleware using predefined format that is the same for every platform. The middleware will manage the requests, translate them to the format appropriate for the external services and forward them to the appropriate servers. It will also manage the responses from servers and send them back to the applications.
 
@@ -24,12 +24,14 @@ The selected solution is then further developed and integrated into an existing 
 
 \subsection{Thesis Outline}
 
-During the project the company solution will be examined and several solutions will be introduced. 
+During the project the middleware server developed by company will be examined. The application will be studied in both development and production environments. The set of problems and future improvements will be retrieved and discussed. The appropriate solutions for selected problems will be presented in this paper.
 
-The Theory section will give information about modern web caching technologies and how they can be used. 
+The Theory section will give the information about the modern web caching technologies and how they can be used on practice. Also, some parts of HTTP protocol will be introduced.
 
-The Architecture overview will present the company solution and will identify the drawbacks.
+The Architecture overview will present the company solution and will identify the drawbacks. The web caching solution for some problems described in architecture overview will be introduced.
 
+The HVG chapter will present the second part of the thesis: Hierarchical VMO Generator.
 
+The testing chapter will compare the performance of the companie’s solution and modified solution.
 
 \newpage

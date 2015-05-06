@@ -15,7 +15,14 @@ Typical DMO and VMO objects are presented in appendix C[Add appendix C]. As coul
 
 Generic. The DMO objects are specific and unique for every content distributor. They are build according to the specific rules in the middleware server. The VMOs are generated from DMOs according to another set of rules specified in the client application. As a result in order to move VMO generation to the server side some descriptive language should be introduced that lets developers to describe the VMO structure.
 
-Hierarchical. DMOs are basically data from content distributors. That means that the DMOs can be depend on other DMOs. For example, the figure [add DMO dep. figure] shows that in order to build a movie list DMO, first the DMO that represents movie categories should be generated, than for each movie category, the set of movie objects should be fetched, and only on the third step, the list of movies could be build. These means that the VMOs have a hierarchical structure. The typical VMO is presented on picture [figure of VMO]. 
+Hierarchical. DMOs are basically data from content distributors. That means that the DMOs can be depend on other DMOs. For example, the figure [add DMO dep. figure] shows that in order to build a movie list DMO, first the DMO that represents movie categories should be generated, than for each movie category, the set of movie objects should be fetched, and only on the third step, the list of movies could be build. These means that the VMOs have a hierarchical structure. The typical VMO is presented on figure \ref{fig:vmo_example}.
+
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=8cm,height=10cm,keepaspectratio]{images/vmo_example.png}
+    \caption{VMO from the set of dependant DMOs}
+    \label{fig:vmo_example}
+\end{figure} 
 
 \subsection{New Middleware server architecture}
 
@@ -29,8 +36,9 @@ In the current architecture, the single instance of the middleware server is dep
 \end{figure}
 
 Lets consider the architecture from another prespective.
-The middleware server receives queries for the VMO generation. It supporsts several content distributors(databases), it makes queries to the content distributors for retrieving data model objects(tables). The middleware server resembles a lot a relational database system. The comparison of database management system and middleware server:
+The middleware server receives queries for the VMO generation. It supporsts several content distributors(databases), it makes queries to the content distributors for retrieving data model objects(tables). The middleware server resembles a lot a relational database system. The comparison of database management system and middleware server is presented on figure \ref{table:db_ms}
 
+\begin{table}
 \begin{center}
   \begin{tabular}{||p{3in}|||p{3in}||}
     \hline
@@ -41,7 +49,10 @@ The middleware server receives queries for the VMO generation. It supporsts seve
     supports dynamic queries to the desired databases and tables & should support queries to the content distributors and theis endpoints \\ \hline
     \hline
   \end{tabular}
+  \caption{Comparison of Database Sysem and Middleware Server properties}
+  \label{table:db_ms}
 \end{center}
+\end{table}
 
 \subsection{Approach description}
 
@@ -103,14 +114,16 @@ As can be seen, the path identifies a single object if it lays though a set of d
 
 \subsection{Hierarchical VMO Generator overview}
 
-In order to solve the problem of multiple requests and middleware server dublication, the descriptive hierarchical VMO generator was implemented. It consists of three parts: content provider dictionary, queries and parser. 
+In order to solve the problem of multiple requests and middleware server dublication, the descriptive hierarchical VMO generator was implemented. It consists of three modules: HVG fetcher, HVG query parser and HVG query builder. In order to build and process VMOs two data structures are used: content provider dictionary and query dictionary. 
 
-The content provider dictionary has a tree based structure and its scheme is presented on \ref{fig:content_provider_map}. Rectangles indicate the single instance of object and parallelograms indicate the dictionary of objects. The content provider dictionary contains a dictionary of content providers. The key is a unique identifier that is used by query objects that are described below. Each content provider consitst of two parts: location and a dictionary of resources. The location is a domain with corresponding scheme. The resource has one field: endpoint. The endpoint is a path in URI[RFC to URI] with several embedded templates. The template can be one of two types: \textit{\{param\_id\}} and \textit{\{param\_id*\}}. The first type indicates that only one value can replace the template. If array of values is given, it will produce the array of resolved endpoints. On the other hand, the second type produces single endpoint, even if array of values is given. The examples of templates are presented in table \ref{table:template_replacement}.
+The content provider dictionary has a tree based structure and its scheme is presented on \ref{fig:content_provider_map}. Rectangles indicate the single instance of object appends parallelograms indicate the dictionary of objects. The content provider dictionary contains a dictionary of content distributors. When the query is passed to the middleware server, the locations of necessary content distributors are retrieved from this dictionary. It is uesd by the HVG fetcher module.
+
+The key is a unique identifier that is used by query objects that are described below. Each content provider consists of two parts: location and a dictionary of resources. The location is a domain with corresponding scheme. The resource has one field: endpoint. The endpoint is a path in URI[RFC to URI] with several embedded templates. The template can be
+one of two types: \textit{\{param\_id\}} and \textit{\{param\_id*\}}. The first type indicates that only one value can replace the template. If array of values is given, it will produce the array of resolved endpoints. On the other hand, the second type produces single endpoint, even if array of values is given. The examples of templates are presented in table \ref{table:template_replacement}.
 
 % TODO: purpose
 
 \begin{table}
-	 \label{table:template_replacement}
 	 \begin{center}
 	  \begin{tabular}{l l}
 	    Input values: & \textit{\{id:[value1,value2,value3]\}} \\
@@ -121,6 +134,8 @@ The content provider dictionary has a tree based structure and its scheme is pre
 	    Endpoint: & \textit{http://testdomain.ext/\{id*\}} \\
 	    Result: &  \textit{http://testdomain.ext/value1,value2,value3}
 	  \end{tabular}
+	 \label{table:template_replacement}
+	 \caption{URL Template examples}
 	\end{center}
 \end{table}
 
@@ -135,8 +150,12 @@ The example of content provider map is given in Appendix C.
 \end{figure}
 
 
-They query represents the request from the client application to the middleware server. The tree based structure is presented on figure \ref{fig:query_structure}. The single query consists of several query objects.
-Each query object may have up to three parameters: \textit{content\_distributor}, \textit{path\_parameters}, \textit{query\_parameters}. The obligatory parameter, \textit{content\_distributor}, corresponds to the key in content provider dictionary desrcibed above. Through it the set of resources is retrieved from the content provider dictionary. The \textit{path\_parameters} and \textit{query\_parameters} are similar to each other, as a result only one of them will be described. The \textit{path\_parameters} is a dictionary of parameters, the key corresponds to the template parameter in resource object described above. Each \textit{path\_parameter} has type field. It can have one of two values: \textit{constant} or \textit{dependency}. If the value is \textit{constant}, only one additional field should be specified: \textit{values}. This field serves as a container of values that should replace the corresponding template in the endpoint. 
+The query represents the request from the client application to the middleware server. The tree based structure is presented on figure \ref{fig:query_structure}. The single query consists of several query objects.
+
+The query is built on the client application using HVG query builder. When the query is finished it is translated into corresponding JSON format and sent to the middleware server.
+
+Each query object may have up to three parameters: \textit{content\_distributor}, \textit{path\_parameters}, \textit{query\_parameters}. The obligatory parameter, \textit{content\_distributor}, corresponds to the key in content provider dictionary desrcibed above. Through it the set of resources is retrieved from the content provider dictionary. The \textit{path\_parameters} and \textit{query\_parameters} are similar to each other, as a result only one of them will be described. The \textit{query\_parameters} is a dictionary of parameters, the key corresponds to the template parameter in resource object described above. Each path parameter has type field. It can have one of two values: \textit{constant} or \textit{dependency}.If the value is \textit{constant}, only one additional field should be specified: \textit{values}. This field serves as a container of values that should replace the corresponding template in the endpoint. 
+
 
 On the other hand, if the value of \textit{path\_parameter} is \textit{dependency}: the query object depends on another query object e.g. for getting the list of movies from the content distributor, the list of categories should be requested first. That means that in order to request a query object, the parent object should be requested first and specified dependency variables for template parameters should be retrieved. In this case, additional parameters should be specified: \textit{parent}, \textit{parent\_parameter\_type}, \textit{path} and \textit{property}. The \textit{parent} specifies the query object identifier of the parent object. The \textit{path} is a JSON path to the object described above. The \textit{property} is a key in the dictionary retrieved by using \textit{path} parameter. The \textit{parent\_parameter\_type} can be one of two values: \textit{key} or \textit{constraint}. If the value is \textit{key} then the dependency variables will be extracted using path: \textit{path}+\textit{property}.
 
@@ -195,16 +214,29 @@ The example of HQP usage is given in Appendix D.
 \end{figure}
 
 
+The HQL supports two level caching. The first level caches the data model objects. It lays after parsing the client request strictly before requesting data from the content distributor. The second level cache lies on top of the execution process and is touched before executing the client request. 
+
 % TODO: add section about asynchronous computation
 
 \subsection{HQL workflow}
 
 The developer writes the request using HQL parser methods. The request is translated into a JSON format that contains a dictionary of query objects. The JSON is sent as a POST HTTP request to the middleware server. The middleware server builds the asyclic graph (if there were dependency cycles it will generate error). The direct asyclic graph is then traversed using breath first search algorithm, on every node(query object) the data is fetched from appropriate content distributor (if the parent data has already been fetched) and is written into the output array. The output array is then sent as a response to the client POST request. 
 
+The schematic workflow of HQL fetcher and HQL query parser is presented on fiqure \ref{fig:hvg_workflow}.
 
-\subsection{Comparison}
+\begin{figure}[h]
+    \centering
+	\includegraphics[width=\textwidth]{images/hvg_qp_workflow.png}
+    \caption{HVG workflow}
+    \label{fig:hvg_workflow}
+\end{figure}
 
-% teoreticaly compare current dmos, vmos and amos(application model objects)
+\subsection{Alternatives to HVG}
+
+The middleware server can be used in order to build one of three object types: Data model object, View model object or Application model object. The initial implementation was responsible for building DMOs. The current implementation builds the VMOs.
+
+The DMO and VMO were described above. The Application Model Object(AMO) contains a set of VMOs that are specific for a content distributor. The alternative to the dynamic VMO generation on the middleware side can be generation of AMOs on the middleware server. Unfortunately, it is not a good idea, because the size of object provided by content distributors can
+vary a lot and some of them can be very heavy. If the full AMOs would be transferred to the client application the big amount of memory should be utilized by both client application and middleware server. In theory, it will dramatically decrease the user experience, but it could be checked as a continuation to this project.
 
 
 \newpage
