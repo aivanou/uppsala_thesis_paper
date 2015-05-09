@@ -3,28 +3,28 @@
 \chapter{Appendix A}
 	 % \includecode{codes/default.vcl}
 	 \lstset{basicstyle=\footnotesize\ttfamily}
-	 \lstinputlisting[breaklines, caption=Varnish Configuration ]{codes/default.vcl}
+	 \lstinputlisting[frame=single,linewidth=15cm,breaklines, caption=Varnish Configuration ]{codes/default.vcl}
 
 \chapter{Appendix B}
 	 
-	% \begin{figure}[h]
- %    	\centering
-	% 	\includegraphics[width=10cm,height=15cm,keepaspectratio]{images/jmeter_conf.png}
- %    	\caption{Jmeter Configuration}
- %    	\label{fig:jmeter_conf}
-	% \end{figure}
+	\begin{figure}[h]
+    	\centering
+		\includegraphics[width=10cm,height=15cm,keepaspectratio]{images/jmeter_conf.png}
+    	\caption{Jmeter Configuration}
+    	\label{fig:jmeter_conf}
+	\end{figure}
 
 \chapter{Appendix C}
 	 % \includecode{codes/default.vcl}
 	 \lstset{basicstyle=\footnotesize\ttfamily}
-	 \lstinputlisting[breaklines, caption=Content Provider Dictionary ]{codes/content_provider.json}
+	 \lstinputlisting[frame=single,linewidth=15cm,breaklines, caption=Content Provider Dictionary ]{codes/content_provider.json}
 
 
 \chapter{Appendix D}
 
-\begin{lstlisting}
+\begin{lstlisting}[frame=single,linewidth=15cm,breaklines=true,caption=HQL usage]
 	var parser = new HQLParser();
-	var j = parser
+	var requestJson = parser
 		  .select('category_movies', 'accedo.ovp.categories.movies')
 		  .setConstantParameter('id', ['movies-action'])
 		  .setQueryParameter('pageSize', 2)

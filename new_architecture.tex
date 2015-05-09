@@ -1,4 +1,6 @@
-\section{Cache solutions}
+\section{Model and Methodology}
+
+The next two chapters describe the methodology and proposed solutions to improve the performance of the current company middleware server. In particular, the model consists of three parts: replacing the Redis cache server with web cache solution, reducing the amount of requests for generating View Model Objects and removing dublication of MVC pattern. This section describes the solutions for replacing Redis cache and the next section describes the algorithm for reducing the requests to the middleware server and removing dublication.
 
 \subsection{Reversed proxy cache}
 
@@ -17,8 +19,7 @@ The figure \ref{fig:req_amount} shows the amount of requests and time that brows
 \end{figure}
 
 
-Let’s consider system architecture using reversed proxy server instead of Redis cache. The client application will make http requests through the reversed proxy server. The proxy sever will decide if the content is stale or not and will act as a web cache. If the content is stale or non-cachable the proxy server will redirect request to the middleware server. Otherwise, it
-will reply to the client application without touching the middleware server. The benefit of this solution is that instead of contacting server and than caching the object, the cache is contacted first and than the server. In theory it should give the performance and flexibility. The redis cache could be replaced by the Content Delivery Network solution in future.
+Let’s consider system architecture using reversed proxy server instead of Redis cache. The client application will make http requests through the reversed proxy server. The proxy sever will decide if the content is stale or not and will act as a web cache. If the content is stale or non-cachable the proxy server will redirect request to the middleware server. Otherwise, it will reply to the client application without touching the middleware server. The benefit of this solution is that instead of contacting server and than caching the object, the cache is contacted first and than the server. In theory it should give the performance and flexibility. The redis cache could be replaced by the Content Delivery Network solution in future.
 
 % describe your solution on the top level
 
@@ -55,9 +56,52 @@ Proxy servers should also work with http sessions. Usually, when session is spec
 
 In order to solve the problem, the Varnish was configured to replace Cookie header with X-Cookie header. This gives the possibility for Varnish to store the requests and still have the analytical requests available. The metadata server was modified in order to treat X-Cookie header as a Cookie header.   
 
+\subsubsection{Varnish configuration}
+
+The varnish logic is configured using Varnish Configurational Language(VCL). The varnish logic represents deterministic state machine consisting of several states:
+
+\begin{itemize}
+	\item vcl\_init -- the initial state 
+	\item vcl\_recv -- the initial point for the request to varnish
+	\item vcl\_pass -- in this state the request is passed to the backend server
+	\item vcl\_hash -- the varnish computes the hash of the request in this state
+	\item vcl\_hit -- occurs when the hit observed on varnish server
+	\item vcl\_miss -- occurs when varnish has stale data or has no data at all
+	\item vcl\_fetch -- when the document is acquired from the backend server
+	\item vcl\_deliver -- when the cache object is about to be delivered to the client
+	\item vcl\_error -- occurs when the error is observed
+\end{itemize}
+
 The Varnish configuration is presented in Appendix A.
 
-The Apache traffic server did not require a specific configuration. 
+The Varnish server start from the command line with the appropriate arguments. The Varnish uses next arguments:
 
+\begin{itemize}
+	\item -a : the backend server address in format ADDRESS:PORT
+	\item -b : the  address in format ADDRESS:PORT
+	\item -f : the path to the VCL file 
+	\item -F : if specified, the varnish will be started in the foreground
+	\item -n : the varnish working directory
+\end{itemize} 
+
+\subsubsection{Apache Traffic server configuration}
+
+The Apache Traffic server configuration consists of several files: 
+
+\begin{itemize}
+	\item cache.config -- the caching behaviour is specified here
+	\item remap.config  -- is used for overall configuration
+	\item cluster.config -- is used for configuring Apache Traffic server in distributed mode
+\end{itemize}
+
+The Apache Traffic server uses the command line to start. The obligatory parameter is --httpport which specifies the listen port. The Apache Traffic server consists of three parts:
+
+\begin{itemize}
+	\item traffic\_cop -- is supervisor process for traffic\_server 
+	\item traffic\_manager -- monitors the traffic\_server and gatheres the logs
+	\item traffic\_server -- responsible for starting the web cache server
+\end{itemize}
+
+The detailed configuration can be found \cite{ats_site}
 
 \newpage

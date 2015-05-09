@@ -1,5 +1,31 @@
-\section{Conclusion}
+\newpage
+\section{Discussion and Conclusion}
 	
-	concl
+Several conclusions can be made using the results of previous chapter: 
+
+\begin{itemize}
+	\item The Hierarchical VMO Generator(HVG) works slower than companie's solution without first level cache
+	\item The stability of HVG depends on the amount of transferred data: the less data the more stable responses
+	\item Without artificial latency the HVG with optimal configuration works roughly with the same speed as current company solution where VMOs are generated on the client side
+	\item With artificial latency the HVG solution works faster 
+\end{itemize}
+
+The \ref{VarnApacheReverse} gives the detailed evaluation of Apache Traffic server and Varnish server as a result the comparison between them is omitted in this project. 
+
+The HVG solution consumes more CPU and memory because it stores the graph of data model objects plus the fetched data from content distributors. It uses computationally intensive breath first search algorithgm on directed graph. On the other hand, the client side VMO generation sends multiple simple requests to the middleware server. They are light requests, that consume small amount of CPU power and memory is used just for storing the final dta model object. The [add CPU/memory consumption graph] show the CPU/memory consumption of single request for generating HVG and single request for fetching data model object.
+
+Fortunately, the algorithm for generating HVG is executed rarely, because most of the time the data is retrieved in first level cache. The drawback of this approach is that the data is stored two times: one as a part of data model object, another as a part of View Model Object. The second level cache for storing data model objects could be turned off, unfortunately these will give additional problems: if the VMO will be stored for the time equals of maximum TTL among all DMOs, some DMOs will become stale and the server response will be irrelevant. Taking this in consideration, the maximum TTL for VMO is computed as:
+
+\begin{center}
+	\begin{math}M = \min_{1 \leq i \leq N} D_{i},\{i=1:N\}\end{math}, N - amount of DMOs in request.
+\end{center}
+
+The solution with HVG does not work well when the set of DMOs have TTL that dramatically differs from one another. In this case the overhead produced by VMO computation will be greater than the latency for retrieving data model objects, but in general it requires additional study. 
+
+\subsection{Further studies}
+
+The Application Model Object(AMO) should be studied and corresponding conclusions should be produced. For small VMOs maybe it would be optimal to transfer compressed AMO.
+
+The Web cache solution requires additional study in terms of selecting the appropriate algorithm for calculating  TTL(time to live) of VMO/DMO objects. Currently the TTL is set to the default time that was not selected through careful study. The maximum time for VMO equals the TTL of DMO that has minumum value. This is one of the proposed algorithms, however this question is not studied enough and requires futher work.
 
 \newpage
