@@ -36,13 +36,14 @@ Each experiment consists of several parts and can be described as an algorithm b
 For each test next configuration was used: Jmeter emulates one hundred users that are making continuous requests for fetching the view model object of the main page.  
 
 
-\subsection{Performance evaluation of Redis Cache and CDN}
+\subsection{Performance evaluation of Redis Cache and Web cache solutions}
+
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=15cm,height=7cm,keepaspectratio]{images/vmo_redis_mult_seq.png}
-    \caption{Response time of middleware server wihth Redis cache for generating hierarchical VMO through sequential requests}
-    \label{fig:vmo_redis_mult_seq}
+    \includegraphics[width=15cm,height=7cm,keepaspectratio]{images/vmo_redis_mult_par.png}
+    \caption{Response time of middleware server wihth Redis cache for generating VMO through parallel requests}
+    \label{fig:vmo_redis_mult_par}
 \end{figure}
 
 
@@ -54,7 +55,7 @@ For each test next configuration was used: Jmeter emulates one hundred users tha
 \end{figure}
 
 
-This type of test emulates the user requests for generating view model object for maing page. In order to build a VMO several requests should be done for gathering data model objects. The request for building single page consists of nine REST subrequests through HTTP protocol for gatheing DMOs. The corresponding Jmeter test plan is presented on figure\ref{fig:vmo_testplan}.
+This type of test emulates the user requests for generating view model object for maing page. In order to build a VMO several requests should be done for gathering data model objects. The request for building single page consists of nine REST subrequests through HTTP protocol for gatheing DMOs. The corresponding Jmeter test plan is presented on figure \ref{fig:vmo_testplan}.
 
 \begin{figure}[h!]
     \centering
@@ -63,15 +64,14 @@ This type of test emulates the user requests for generating view model object fo
     \label{fig:vmo_testplan}
 \end{figure}
 
-
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=15cm,height=7cm,keepaspectratio]{images/vmo_redis_mult_par.png}
-    \caption{Response time of middleware server wihth Redis cache for generating VMO through parallel requests}
-    \label{fig:vmo_redis_mult_par}
+    \includegraphics[width=15cm,height=7cm,keepaspectratio]{images/vmo_redis_mult_seq.png}
+    \caption{Response time of middleware server wihth Redis cache for generating hierarchical VMO through sequential requests}
+    \label{fig:vmo_redis_mult_seq}
 \end{figure}
 
-Figure \ref{fig:vmo_redis_mult_par} illustrates server response time for generating VMO that has no dependencies between objects. As can be seen, the maximum response time is about 300 ms. Figure \ref{fig:vmo_redis_mult_seq} shows response time from middleware server for generating hierarchical VMO that tree structure is shown on \ref{vmo_test_example}. 
+Figure \ref{fig:vmo_redis_mult_par} illustrates server response time for generating VMO that has no dependencies between objects. As can be seen, the maximum response time is about 300 ms. Figure \ref{fig:vmo_redis_mult_seq} shows response time from middleware server for generating hierarchical VMO that tree structure is shown on \ref{fig:vmo_test_example}. 
 
 \begin{figure}[h!]
     \centering
@@ -89,7 +89,7 @@ Figure \ref{fig:vmo_redis_mult_par} illustrates server response time for generat
 \end{figure}
 
 
-The VMO has tree structure with depth equal 3(three). The initial node is always called \textit{root}. It has no data and is introduced for convenience to "glue" other nodes in a tree. As can be noticed, it is the longest path(Root->Episodes->TvShows->TvEpisodesMetadata) has depth four as a result three sequential requests should be made for generating data(the root node is excluded because it has no data). As can be seen the performance decreases about three times. It is quite predictable because it is necessary to make three sequential requests. Figure \ref{fig:vmo_varnish_mult} shows the VMO generation through Varnish web cache. The response time decreases dramatically. The reason of that is that it takes constant time for getting data from Varnish web cache. The request for getting DMO rarely touches the middleware server. It is noticable from the figure, when the request goes through varnish web cache to the middleware server the response time increases. Figure \ref{fig:vmo_ts_mult} shows the response time for making requests through Apache Traffic server configured as a web cache. The results more predictable than the results of varnish web cache. Theh maximum time does not reach 100 ms.  
+The VMO has tree structure with depth equal 3(three). The initial node is always called \textit{root}. It has no data and is introduced for convenience to "glue" other nodes in a tree. As can be noticed, it is the longest path(Root $\rightarrow$ Episodes $\rightarrow$ TvShows $\rightarrow$ TvEpisodesMetadata) has depth four as a result three sequential requests should be made for generating data(the root node is excluded because it has no data). As can be seen the performance decreases about three times. It is quite predictable because it is necessary to make three sequential requests. Figure \ref{fig:vmo_varnish_mult} shows the VMO generation through Varnish web cache. The response time decreases dramatically. The reason of that is that it takes constant time for getting data from Varnish web cache. The request for getting DMO rarely touches the middleware server. It is noticable from the figure, when the request goes through varnish web cache to the middleware server the response time increases. Figure \ref{fig:vmo_ts_mult} shows the response time for making requests through Apache Traffic server configured as a web cache. The results more predictable than the results of varnish web cache. Theh maximum time does not reach 100 ms.  
 
 \begin{figure}[h!]
     \centering
@@ -100,7 +100,8 @@ The VMO has tree structure with depth equal 3(three). The initial node is always
 
 \subsection{Performance evaluation of HVG with different configurations}
 
-Figure \ref{fig:vmo_hvg} shows the response time for hierarchical VMO generator with different configurations. As can be seen, there are four hills, each hill represents the corresponding experiment: HVG with first level cache(caching data model objects), HVG with first level cache and data compression, HVG with first and second level caches(caching both data model objects and view model objects) and HVG with first and second level cache and data compression. The first hill appears to be the slowest one, responses come in around 6000ms in the worst case. The behaviour is quite unpredictable, because the vmo requests consume 100\% of CPU and the amount of data that is transferred between client and middleware server is quite big. The summary report on [TODO: add summary report] shows execution staistic.
+Figure \ref{fig:vmo_hvg} shows the response time for hierarchical VMO generator with different configurations. As can be seen, there are four hills, each hill represents the corresponding experiment: HVG with first level cache(caching data model objects), HVG with first level cache and data compression, HVG with first and second level caches(caching both data model objects and view model objects) and HVG with first and second level cache and data compression. The first hill appears to be the slowest one, responses come in around 6000ms in the worst case. The behaviour is quite unpredictable, because the vmo requests consume 100\% of CPU and the amount of data that is transferred between client and middleware server is quite big.
+
 
 The second hill amost twice faster than the first one. The reason of that is the reduced amount of data transferred between client and server. The compression reduces amount of data almost in five times. As can be seen, the compression does not produce overhead and slows responses for a negligible time. In addition, the hill looks more predictable and has less cavities.  
 

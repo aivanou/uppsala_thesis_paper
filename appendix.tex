@@ -43,4 +43,140 @@
 
 \end{lstlisting}
 
+\chapter{Appendix E}
+
+\begin{lstlisting}[frame=single,linewidth=15cm,breaklines=true,caption=Example of VMO/multiple DMOs that were used for testing]
+	 {  
+   "movies_movies-action":{  
+      "content_distributor":"accedo.ovp.categories.movies",
+      "path_parameters":{  
+         "id":{  
+            "type":"constant",
+            "values":[  
+               "movies-action"
+            ],
+            "parent_parameter_type":"key"
+         }
+      },
+      "query_parameters":{  
+         "pageSize":{  
+            "value":15
+         }
+      }
+   },
+   "tvshow    s_tv-shows-comedy":{  
+      "content_distributor":"accedo.ovp.categories.tvshows",
+      "path_parameters":{  
+         "id":{  
+            "type":"constant",
+            "values":[  
+               "tv-shows-comedy"
+            ],
+            "parent_parameter_type":"key"
+         }
+      },
+      "query_parameters":{  
+         "pageSize":{  
+            "value":15
+         }
+      }
+   },
+   "tvshows_    tv-shows-drama-american":{  
+      "content_distributor":"accedo.ovp.categories.tvshows",
+      "path_parameters":{  
+         "id":{  
+            "type":"constant",
+            "values":[  
+               "tv-shows-drama-american"
+            ],
+            "parent_parameter_type":"key"
+         }
+      },
+      "query_parameters":{  
+         "pageSize":{  
+            "value":1            5
+         }
+      }
+   },
+   "movies_movies-family":{  
+      "content_distributor":"accedo.ovp.categories.movies",
+      "path_parameters":{  
+         "id":{  
+            "type":"constant",
+            "values":[  
+               "movies-family"
+            ],
+            "parent_parameter_type":"key"
+         }
+      },
+      "query_parameters":{  
+         "pageSize":{  
+            "value":15
+         }
+      }
+   },
+   "ep    isodes":{  
+      "content_distributor":"accedo.ovp.episodes",
+      "query_parameters":{  
+         "pageSize":{  
+            "value":15
+         }
+      }
+   },
+   "tvshow":{  
+      "content_distributor":"accedo.ovp.tvshow",
+      "path_parameters":{  
+         "id":{  
+            "type":"dependency",
+            "parent":"episodes",
+            "path":"entries.m    etadata",
+            "property":"value",
+            "parent_parameter_type":"constraint",
+            "constraints":[  
+               {  
+                  "key":"name",
+                  "value":"VOD$tvShowId"
+               }
+            ]
+         }
+      }
+   },
+   "tvseason":{  
+      "content_distributor":"accedo.ovp.tvseason",
+      "path_parameters":{  
+         "id":{  
+            "type":"dependency",
+            "parent":"    episodes",
+            "path":"entries.metadata",
+            "property":"value",
+            "parent_parameter_type":"constraint",
+            "constraints":[  
+               {  
+                  "key":"name",
+                  "value":"VOD$tvSeasonId"
+               }
+            ]
+         }
+      }
+   },
+   "channels":{  
+      "content_distributor":"accedo.ovp.channels",
+      "path_parameters":{  
+         "id":{  
+            "    type":"constant",
+            "values":[  
+               "tv-channels-sports"
+            ],
+            "parent_parameter_type":"key"
+         }
+      },
+      "query_parameters":{  
+         "pageSize":{  
+            "value":15
+         }
+      }
+   }
+}
+\end{lstlisting}
+
 \end{appendices}

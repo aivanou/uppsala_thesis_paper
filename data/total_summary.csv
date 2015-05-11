@@ -1,0 +1,12 @@
+#Type,Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,KB/sec,Avg. Bytes
+vmo_mult,Categories_movies_action,11182,323,6,635,46.81,0.09%,33.3,676.39,20806.0
+vmo_mult,Categories_tvshows_comedy,11168,323,6,636,45.90,0.07%,33.2,265.57,8179.0
+vmo_mult,Categories_tvshows_drama,11153,323,7,636,45.59,0.06%,33.2,421.20,12989.5
+vmo_mult,Categories_movies_family,11143,325,5,636,45.64,0.08%,33.2,799.20,24667.1
+vmo_mult,Episodes,11131,324,6,629,45.62,0.07%,33.1,662.11,20458.1
+vmo_mult,Programs,11120,324,9,633,45.39,0.06%,33.1,213.57,6605.5
+vmo_mult,Channel,11107,323,9,638,44.51,0.05%,33.1,182.40,5647.6
+vmo_mult,TvShows,11099,323,8,635,43.82,0.05%,33.0,172.60,5347.8
+vmo_mult,TVSeasons,11092,323,6,633,43.36,0.06%,33.0,245.26,7603.8
+vmo_mult,TOTAL,100195,323,5,638,45.20,0.07%,298.3,3637.98,12488.9
+vmo_single,VMO_Request,50549,866,10,10019,465.73,0.00%,113.8,1817.94,16353.9
