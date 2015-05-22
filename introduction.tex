@@ -3,22 +3,22 @@
 
 \subsection{Background}
 
-Applications are frequently required to communicate with external services e.g. Facebook, Youtube, etc. Unfortunately, every external service specifies their own API and communication protocols. Therefore it is difficult to write applications that use many external services because a developer should write the communication layer for every external service. 
+Applications are frequently required to communicate with external services e.g. Facebook, Youtube, etc. Unfortunately, every external service specifies their own API and communication protocols. Consequently, it is difficult to write applications that use many external services because a developer would have to write the communication layer for every external service. 
 
-The problem can be defined as following:  There are a lot applications written for different operating systems and they require frequent communication with many external services. What architecture is the most appropriate for communication between applications and external services? 
+The problem can be defined as follows:  There are a lot applications written for different operating systems and they require frequent communication with many external services. What architecture is the most appropriate for communication between applications and external services? 
 
-One of the solutions, is a simple direct communication between client and services. The client will send requests to every service and wait for responses. This solution has several drawbacks: a developer should maintain many communication layers written on different languages. When the external API changes, the developer should rewrite every communication layer. This increase the cost of development and the development time. Another problem is security, some services might have a private API that should not be used directly.
+One of the solutions, is a simple direct communication between client and services. The client will send requests to every service and wait for responses. This solution has several drawbacks: a developer would have to maintain many communication layers written in different languages. When the external API changes, the developer would be forced to rewrite every communication layer. This increases the cost of development and the development time. Another problem is security, some services might have a private API that should not be used directly.
 
-The different solution will be to introduce the middle layer between the client and external services. The client will communicate with middle layer using predefined protocol, middle layer will gather data from external services and send it to the client. This approach has several benefits: every application will be written with standardised communication API, defined by the middle layer; if external API changes only middle layer should be rewritten; the response time can be decreased by caching the data in the middle layer. 
+A different solution will be to introduce the middle layer between the client and external services. The client will communicate with middle layer using predefined protocol, middle layer will then gather data from external services and send it to the client. This approach has several benefits: every application will be written with standardised communication API, defined by the middle layer; if external API changes, only middle layer should be rewritten; the response time can be decreased by caching the data in the middle layer. 
 
-Another solution can be the usage of CDN (Content Delivery Networks). The application will send the requests directly to the external services, but the request will be intercepted and handled by the CDN Edge Servers that are located between Application and External Services. This solution requires dynamic usage of HTTP Cache-Control headers. The advantage of using CDN is that the developer should not maintian the middleware service, the results will be cached somewhere on the way between Application and External services, therefore the response to the final user will be faster. On the other hand, the drawbacks are: it is difficult to configure CDN to process dynamic content, the developer needs to write the communication layer for every external service. 
+Another solution can be the usage of CDN (Content Delivery Networks). The application will send the requests directly to the external services, but the request will be intercepted and handled by the CDN Edge Servers that are located between Application and External Services. This solution requires dynamic usage of HTTP Cache-Control headers. The advantage of using CDN is that the developer need not maintain the middleware service. Alternatively, the results will be cached somewhere on the way between Application and External services producing a faster response to the final user. On the other hand, the drawbacks are that it is difficult to configure CDN to process dynamic content and the developer would need to write the communication layer for every external service. 
 
-The project tries to break the connection between applications and external services by providing the middle layer. The applications will communicate with the middleware using predefined format that is the same for every platform. The middleware will manage the requests, translate them to the format appropriate for the external services and forward them to the appropriate servers. It will also manage the responses from servers and send them back to the applications.
+This project tries to break the connection between applications and external services by providing the middle layer. The applications will communicate with the middleware using a predefined format that is the same for every platform. The middleware will manage the requests, translate them to the format appropriate for the external services and forward them to the appropriate servers. It will also manage the responses from servers and send them back to the applications.
 
 
 \subsection{Project Objectives}
 
-The project in the context of networking, caching and data aggregation. The goal of the project is to investigate different solutions for implementing a caching layer used in a backend middleware, design and develop prototypes for each solution, run set of tests and select the most optimal solution.
+The project is in the context of networking, caching and data aggregation. The goal of the project is to investigate different solutions for implementing a caching layer used in a backend middleware, design and develop prototypes for each solution, run set of tests and select the most optimal solution.
 The selected solution is then further developed and integrated into an existing middleware provided by the company, and an analysis is then made in a real life scenario.
 
 
@@ -32,6 +32,6 @@ The Architecture overview will present the company solution and will identify th
 
 The HVG chapter will present the second part of the thesis: Hierarchical VMO Generator.
 
-The Test chapter compares the performance of Redis cache and Web cache solutions and evaluates the HVG algorithm in comparison with existing solution.
+The Test chapter will compare the performance of Redis cache and Web cache solutions and evaluate the HVG algorithm in comparison with existing solution.
 
 \newpage
