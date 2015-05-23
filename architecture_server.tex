@@ -13,13 +13,14 @@ The company architecture contains the following components: Client Application, 
 \end{figure}
 
 
-The client is a web application developed using Javascript, HTML, CSS framework and Model View Controller pattern. It communicates with middleware server through REST services based on HTTP protocol. The client has several components: Controllers, Managers, Services. 
+The VIA WEB Angular.js represents is a web application developed using Javascript, HTML, CSS framework and Model View Controller pattern. In the system it is called client application. It communicates with middleware server through REST services based on HTTP protocol. The client has several components: Controllers, Managers, Services. 
 
 The contollers validate the user data, invoke corresponding managers and render data to the view objects represented by HTML pages. The managers are implemented using Facade pattern\cite{DesignPatterns}. They hold and manage services, construct View Model Objects from service responses and send them back to controllers. 
 
-The services are communication layer between the client application and the middleware server. They communicate via REST services based on HTTP protocol. This brings flexibility to the architecture and makes components loosely coupled.[describe why it is good?]. 
+The services are communication layer between the client application and the middleware server. They communicate via REST services based on HTTP protocol. This brings flexibility to the architecture and makes components loosely coupled.
+% [describe why it is good?]. 
 
-The middleware server serves as a data aggregator and security point. It translates requests from the client application to the format understandable by the metadata server or content distributors, gathers data from content distributors, builds data model objects(the definition is given in the next section) and sends the as JSON entities to the client application.
+The VIA WEB Node.js is a middleware server. It serves as a data aggregator and security point. It translates requests from the client application to the format understandable by the metadata server or content distributors, gathers data from content distributors, builds data model objects(the definition is given in the next section) and sends the as JSON entities to the client application.
 
 Content servers(content distributors) are customer servers. They are the main sources of information that needs to be presented by the client application. They can be represented for example by the movie entities or music distributors.
 
