@@ -3,9 +3,11 @@
 
 \subsection{Background}
 
-Applications are frequently required to communicate with external services e.g. Facebook, Youtube, etc. Unfortunately, every external service specifies their own API and communication protocols. Consequently, it is difficult to write applications that use many external services because a developer would have to write the communication layer for every external service. 
+The thesis project is done in the company \textit{Accedo Broadband AB}. \textit{Accedo is the market leading enabler of TV application solutions. Accedo provides applications, tools and services to media companies, consumer electronics and TV operators globally, to help them deliver the next-generation TV experience. Accedo’s cloud-based platform solutions enable customers to cost-efficiently roll out and manage application offerings and stores for multiple devices and markets} \cite{Accedo}.
 
-The problem can be defined as follows:  There are a lot applications written for different operating systems and they require frequent communication with many external services. What architecture is the most appropriate for communication between applications and external services? 
+The main business of the company is developing smart user applications for customer APIs. Unfortunately, every customer API was developed in a unique way and has their own communication protocol. Consequently, it is difficult to write smart user applications that use many customer APIs because a developer would have to write the communication layer for every customer API. 
+
+The problem can be defined as follows:  There are a lot applications written for different operating systems and they require frequent communication with many customer APIs. What architecture is the most appropriate for communication between applications and external services represented by a customer APIs? 
 
 One of the solutions, is a simple direct communication between client and services. The client will send requests to every service and wait for responses. This solution has several drawbacks: a developer would have to maintain many communication layers written in different languages. When the external API changes, the developer would be forced to rewrite every communication layer. This increases the cost of development and the development time. Another problem is security, some services might have a private API that should not be used directly.
 
@@ -13,7 +15,7 @@ A different solution will be to introduce the middle layer between the client an
 
 Another solution can be the usage of CDN (Content Delivery Networks). The application will send the requests directly to the external services, but the request will be intercepted and handled by the CDN Edge Servers that are located between Application and External Services. This solution requires dynamic usage of HTTP Cache-Control headers. The advantage of using CDN is that the developer need not maintain the middleware service. Alternatively, the results will be cached somewhere on the way between Application and External services producing a faster response to the final user. On the other hand, the drawbacks are that it is difficult to configure CDN to process dynamic content and the developer would need to write the communication layer for every external service. 
 
-This project tries to break the connection between applications and external services by providing the middle layer. The applications will communicate with the middleware using a predefined format that is the same for every platform. The middleware will manage the requests, translate them to the format appropriate for the external services and forward them to the appropriate servers. It will also manage the responses from servers and send them back to the applications.
+This project tries to break the connection between applications and external services by providing the middle layer. The applications communicates with the middleware using a predefined format that is the same for every platform. The middleware will manage the requests, translate them to the format appropriate for the external services and forward them to the appropriate servers. It will also manage the responses from servers and send them back to the applications.
 
 
 \subsection{Project Objectives}
@@ -24,7 +26,7 @@ The selected solution is then further developed and integrated into an existing 
 
 \subsection{Thesis Outline}
 
-During the project the middleware server developed by company will be examined. The application will be studied in both development and production environments. The set of problems and future improvements will be retrieved and discussed. The appropriate solutions for selected problems will be presented in this paper.
+During the project the middleware server developed by company will be examined. The application will be studied and analysed in development environment. The set of problems and future improvements will be retrieved and discussed. The appropriate solutions for selected problems will be presented in this paper.
 
 The Theory section will give the information about the modern web caching technologies and how they can be used on practice. Also, some parts of HTTP protocol will be introduced.
 

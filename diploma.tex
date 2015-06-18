@@ -28,7 +28,8 @@
 \usepackage{chngcntr}
 \usepackage{csvsimple}
 \usepackage{pgfplotstable,filecontents}
-
+\usepackage{afterpage}
+	
 \pgfplotsset{compat=1.9}% supress warning
 
 
@@ -57,7 +58,44 @@
 \newcommand\sign[1]{sign(#1)}
 \newcommand{\includecode}[2][c]{\lstinputlisting[caption=#2, escapechar=, style=custom#1]{#2}}
 
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
 \begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        \textbf{A Centralised data aggregation layer across different consuming platforms}
+                
+        \vspace{1.5cm}
+        
+        \textbf{Aliaksandr Ivanou}
+        
+        \vfill
+        
+        A thesis presented for the degree of\\
+        Master of Science
+        
+        \vspace{0.8cm}
+        
+        \includegraphics[width=0.4\textwidth]{images/uulogo.png}
+        
+        Department of Information Technology \\
+        Uppsala University\\
+        Sweden\\
+        23.05.2015
+        
+    \end{center}
+\end{titlepage}
+
+\newpage\mbox{}\newpage
+
+\input{ack.tex}
 
 \newcolumntype{M}{>{\begin{varwidth}{4cm}}l<{\end{varwidth}}} %M is for Maximal column
 

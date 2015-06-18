@@ -1,25 +1,25 @@
 \section{Model and Methodology}
 
-The next two chapters describe the methodology and proposed solutions to improve the performance of the current company middleware server. In particular, the model consists of three parts: replacing the Redis cache server with web cache solution, reducing the amount of requests for generating View Model Objects, and removing dublication of the MVC pattern. This section describes the solutions for replacing Redis cache and the next section describes the algorithm for reducing the requests to the middleware server and removing duplication.
+The next two chapters describe the methodology and proposed solutions to improve the performance of the current company middleware server. In particular, the model consists of three parts: replacing the Redis cache server with web cache solution, reducing the amount of requests for generating view model objects, and removing duplication of the MVC pattern. This section describes the solutions for replacing Redis cache and the next section describes the algorithm for reducing requests to the middleware server and removing duplication.
 
 \subsection{Reversed proxy cache}
 
-The figure \ref{fig:req_amount} shows the amount of requests and time that browser needs in order to generate a single VMO and  render a page. The browser needs to make more than twenty AJAX requests for a single page. The middleware was deployed on the local machine meaning there is no latency between the browser and middleware server. As can be seen, these are not optimistic numbers. The amount of requests are too high and computation has to be done on the both client and server sides. Several questions arise:
+The figure \ref{fig:req_amount} shows the amount of requests and time that the browser needs in order to generate a single VMO and render a page. The browser needs to make more than twenty AJAX requests for a single page. The middleware was deployed on the local machine meaning there is no latency between the browser and the middleware server. As can be seen, these are not optimistic numbers. The amount of requests are too high and computation has to be done on the both client and server sides. Several questions arise:
+
 \begin{itemize}
 	\item Is Redis a good caching layer for this project?
-	\item Can Redis be replaced by something else? Maybe it would be better to use the configurational cache (represented by the web caches) and control it through the http cache control headers.
+	\item Can Redis be replaced by something else? Maybe it would be better to use the configurational cache (represented by the web caches) and control it through the HTTP cache control headers?
 \end{itemize}
 
 
 \begin{figure}[h]
     \centering
 	\includegraphics[width=\textwidth]{images/amount_of_requests.png}
-    \caption{Example of page generation by browser}
+    \caption{Example of page generation by the browser}
     \label{fig:req_amount}
 \end{figure}
 
-
-Let’s consider system architecture using reversed proxy server instead of Redis cache. The client application will make http requests through the reversed proxy server. The proxy server will decide whether the content is stale or not and will act as a web cache. If the content is stale (non-cacheable) the proxy server will redirect the request to the middleware server. Otherwise, it will reply to the client application without touching the middleware server. The benefit of this solution is that instead of contacting server and then caching the object, the cache is contacted first and then the server. In theory, it should give the performance and flexibility. The Redis cache could be replaced by the Content Delivery Network solution in future.
+Let’s consider a system architecture using reversed proxy server instead of Redis cache. In this case, the client application makes HTTP requests through the reversed proxy server. The proxy server decides whether the content is stale or not and acts as a web cache: if the content is stale (non-cacheable) the proxy server redirects the request to the middleware server; Otherwise, it replies to the client application without touching the middleware server. The benefit of this solution is that instead of contacting the server and then caching the object, the cache is contacted before the server. In theory, the approach should give performance and flexibility. The Redis cache could be replaced by the Content Delivery Network solution in future.
 
 % describe your solution on the top level
 
@@ -27,21 +27,21 @@ Let’s consider system architecture using reversed proxy server instead of Redi
 
 The web cache for the project should satisfy several parameters:
 \begin{itemize}
-	\item Be Configurable- The client application sends requests both for DMOs and for writing user actions. The web cache should not cache the requests for writing user actions. The sessions still should be supported in order to write user actions. 
+	\item Be Configurable- The client application sends requests both for DMOs and for writing user actions. The web cache should not cache the requests when writing user actions. However, the session should still be supported in order to write user actions. 
 	\item Be Responsive, Easily Maintainable- The web cache should be deployed easily and provide statistics and internal logging. 
-	\item High performance- The web cache should be transparent and must not increase the request time and latency if the cache object was not found locally. 
+	\item High performance- The web cache should be transparent and must not increase the request time and latency if the cache object is not found locally. 
 	% todo add more criterias
 \end{itemize}
 
-There are many web cache solutions available in both commercial and open source. For this project only open source solutions were considered. The initial candidates were: Squid, Varnish, Apache server with proxy module, Nginx server as a cachable reversed proxy, and Apache Traffic Server.
+There are many web cache solutions available in both commercial and open source markets. For this project, only open source solutions were considered. The initial candidates were: Squid, Varnish, Apache server with proxy module, Nginx server as a cachable reversed proxy, and Apache Traffic Server.
 
 The Squid server is a forward proxy server, but it can be configured as a reversed proxy server. Squid is preferably used for storing static content.
 
-The Varnish was developed as a reversed proxy server from the beginning. It is fast, reliable, and lightweight. It uses Varnish Configuration Language (VCL) for configuring and describing the data workflow in cache. The VCL is translated to the C code and compiled to a shared object which is then dynamically linked into the server process. It is a powerful tool that helps to set up Varnish as a dynamic reverse proxy server.
+The Varnish was developed as a reversed proxy server from the beginning. It is fast, reliable, and lightweight. It uses Varnish Configuration Language (VCL) for configuring and describing the data workflow in cache. The VCL is translated into the C code and compiled to a shared object which is then dynamically linked into the server process. It is a powerful tool that helps to set up Varnish as a dynamic reverse proxy server.
 
-The Apache traffic server was developed by the Yahoo group and eventually moved to the Apache Incubator \cite{GuApacheTrafficUri}. According to Yahoo Inc., Apache traffic server can handle more than 400TB of internet traffic per day and works as a forward as well as reversed proxy server. It has a growing community and is continously improved upon. The configuration is simple and consists of changing several files. All these, make Apache traffic server a good candidate.  
+The Apache Traffic Server was developed by the Yahoo group and eventually moved to the Apache Incubator \cite{GuApacheTrafficUri}. According to Yahoo Inc., the Apache Traffic Server can handle more than 400TB of internet traffic per day and works as a forward as well as a reversed proxy server. It has a growing community and is continously improved upon. The configuration is simple and consists of changing several files. All these make the Apache Traffic Server a good candidate.  
 
-Other solutions (Nginx and Apache server) were not originally developed to be proxy servers, but have additional modules that one can install and configure. They are not well-configured and work worse than the solutions described above \cite{GuApacheTrafficUri}[change].
+Other solutions (Nginx and Apache server) were not originally developed to be proxy servers, but have additional modules that one can install and configure. However, they are not well-configured and work worse than the solutions described above \cite{GuApacheTrafficUri}.
 
 A thorough comparison and performance evaluation of Varnish and Apache Traffic Server can be found in \cite{VarnApacheReverse}.    
 
@@ -50,11 +50,11 @@ A thorough comparison and performance evaluation of Varnish and Apache Traffic S
 
 \subsection{Web cache configuration}
 
-Before performing execution and comparative study, reversed proxy servers should be properly configured. They should aggregate and store requests that contain public data and skip analytical requests and requests with private user information (e.g. payments).
+Before performing an execution and comparative study, reversed proxy servers should be properly configured. They should aggregate and store requests that contain public data and skip analytical requests and requests with private user information. For example, payments.
 
-Proxy servers should also work with http sessions. Usually, when the session is specified (the set-cookie http header included in the server response), proxy servers are transparent, meaning they are skipping these requests and not storing them in memory. As was described in previous chapters, the metadata server uses http session for analytical purposes. This means that even anonymous users will have a unique session. 
+Proxy servers should also work with HTTP sessions. Usually, when the session is specified (the \textit{set-cookie} HTTP header included in the server response), proxy servers are transparent, meaning they are skipping these requests and not storing them in memory. As was described in previous chapters, the metadata server uses HTTP session for analytical purposes. This means that even anonymous users will have a unique session. 
 
-In order to solve this problem, the Varnish was configured to replace Cookie header with X-Cookie header. This gives the possibility for Varnish to store the requests and still have the analytical requests available. The metadata server was modified in order to treat X-Cookie header as a Cookie header.   
+In order to solve this problem, the Varnish was configured to replace \textit{cookie} header with \textit{x-cookie} header. This gives the possibility for Varnish to store the requests and still have the analytical requests available. The metadata server was modified in order to treat \textit{x-cookie} header as a \textit{cookie} header.   
 
 \subsubsection{Varnish configuration}
 
@@ -84,17 +84,17 @@ The Varnish server starts from the command line with the appropriate arguments. 
 	\item -n : the varnish working directory
 \end{itemize} 
 
-\subsubsection{Apache Traffic server configuration}
+\subsubsection{Apache Traffic Server configuration}
 
-The Apache Traffic server configuration consists of several files: 
+The Apache Traffic Server configuration consists of several files: 
 
 \begin{itemize}
 	\item cache.config -- the caching behaviour is specified here
 	\item remap.config  -- is used for overall configuration
-	\item cluster.config -- is used for configuring Apache Traffic server in distributed mode
+	\item cluster.config -- is used for configuring Apache Traffic Server in distributed mode
 \end{itemize}
 
-The Apache Traffic server uses the command line to start. The obligatory parameter is --httpport which specifies the listen port. The Apache Traffic server consists of three parts:
+The Apache Traffic Server uses the command line to start. The obligatory parameter is --HTTP port which specifies the listen port. The Apache Traffic Server consists of three parts:
 
 \begin{itemize}
 	\item traffic\_cop -- supervises process for traffic\_server 
